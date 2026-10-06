@@ -20,7 +20,7 @@ It also has to show Richard's visual style and creativity, using the existing Vi
 ## 2. Scope
 
 **In scope**
-- **One product category: batteries.** The EU battery passport becomes mandatory on 18 Feb 2027 (Regulation 2023/1542) for EV, industrial, LMT (e-bike/e-scooter) and home-storage batteries over 2 kWh.
+- **One product category: batteries.** The EU battery passport becomes mandatory on 18 Feb 2027 (Regulation 2023/1542, Art. 77). It covers every EV battery and every LMT battery (e-bikes, e-scooters) regardless of capacity, plus industrial batteries over 2 kWh, which includes home storage. Portable and SLI batteries are out of scope. Small cells like 18650s don't need a passport themselves, so the demo calls its output **passport-shaped data** and never claims those cells require one.
 - **A slice of about 22 passport fields** covering the official clusters (initial list in §5.2; finalised against the Battery Pass open data model, github.com/batterypass/BatteryPassDataModel, at plan time).
 - **An offline extraction pipeline**, plus a baseline, plus an eval over about 30 public datasheets.
 - **A static demo app** showing 3–4 handpicked datasheets.
@@ -93,6 +93,17 @@ vigil-demo/
    - correct "not found" rate (the AI didn't invent a value)
    - cost and wall-clock time per datasheet
    - a list of missed errors with their reasons, for the write-up
+   - **Revised after the eval review (Tue 6 Oct 2026):**
+     - **Three arms:** (A) baseline, (B) quote prompt with checks ignored, (C) quote prompt with checks. B vs C isolates the checks.
+     - **The baseline gets the same rules** (not-found is valid, main variant), just without quotes.
+     - **Headline metrics:**
+       - precision of auto-accepted fields, with coverage and review burden
+       - caught rate on **wrong values and hallucinations only**, with omissions reported separately
+       - recall on present fields and the hallucination rate on absent fields, reported separately
+     - **95% bootstrap CIs** by sheet. No per-cluster percentages.
+     - **Tuning:** only on a ~5-sheet `dev` split. Freeze, then report on the `test` split.
+     - **Blind labels:** about 8 test sheets are labelled with no prefill, and the label edit rate against the prefill is reported.
+     - **One model per comparison:** the served model is recorded, and a sheet whose two runs were served by different models is rejected.
 
 ### 5.2 Initial field list (about 22; finalised at plan time)
 
@@ -106,7 +117,7 @@ vigil-demo/
 ### 5.3 Data
 
 - **About 30 public datasheets** spanning several manufacturers and layouts: cylindrical cells (18650/21700, e.g. LG, Samsung, Molicel, Panasonic) plus a few e-bike and home-storage packs. `sources.csv` records the URL for each.
-- **Ground truth:** Richard labels every field in a spreadsheet, about 2–3 hours. Claude may pre-fill a draft, but **Richard checks every value against the PDF**. Unchecked pre-fills would make the eval circular.
+- **Ground truth:** Richard labels every field in a CSV (opened as a spreadsheet), following a written labelling guide, which takes about 3 hours. Non-blind sheets are pre-filled from the output, and **Richard checks every value against the PDF**. About 8 blind test sheets have no prefill at all.
 - **Demo set:** 3–4 datasheets chosen from the results: one clean, one where the check caught a real model error, and one with many supplier and estimate gaps. **If the check never catches a real error** across the ~30 sheets, the demo uses the most instructive real `review` field instead (e.g. a value that wasn't in the document), and the case study reports the result honestly. Errors are never planted.
 
 ## 6. Demo flow

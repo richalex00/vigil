@@ -2,57 +2,61 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build an offline Python pipeline. It turns public battery datasheets (PDF) into checked Digital Product Passport field data, runs a single-prompt baseline for comparison, scores both against hand-made labels, and exports JSON files for the static demo app (Plan 2).
+**Goal:** Build an offline Python pipeline. It turns public battery datasheets (PDF) into checked, passport-shaped field data, runs a single-prompt baseline for comparison, scores both against hand-made labels with honest metrics, and exports JSON files for the static demo app (Plan 2).
 
 **Architecture:**
 - **Ingest:** PDF → page/line text with pdfplumber.
 - **Extract:** Claude returns every field as `value + unit + exact quote + page`, using JSON-schema structured output.
 - **Check:** a deterministic checker assigns each field exactly one status (`verified-source`, `review`, `estimate`, `supplier`, `derived`) with a reason.
-- **Baseline and eval:** a baseline prompt (no quotes, no checks) and an eval module compare both methods against `labels/labels.csv`.
-- **Contract:** the only interface with the app is the JSON in `pipeline/out/`, defined in Task 1.
+- **Baseline:** gets the same instructions, but without quotes or checks.
+- **Eval:** compares three arms: (A) baseline, (B) quote prompt with checks ignored, (C) quote prompt with checks. B vs C isolates the value of the checks. It reports selective accuracy (precision of accepted fields), errors caught on wrong values only, present and absent fields separately, a blind-labelled subset, and bootstrap confidence intervals by sheet.
+- **Contract:** the only interface with the app is the JSON in `pipeline/out/`, plus `schema.json`.
 
 **Tech Stack:** Python 3.14 (venv + pip), `anthropic` SDK, `pdfplumber`, `pytest`. Model `claude-opus-5-5`.
 
 **Spec:** `docs/superpowers/specs/2026-10-06-vigil-demo-design.md`
 
+**Reviewed Tue 6 Oct 2026 by four reviewers** (code correctness, spec coverage, eval methodology, domain). This version includes their fixes.
+
 ## Global Constraints
 
 - All pipeline code lives under `pipeline/`. Run commands from `pipeline/` with the venv active (`source .venv/bin/activate`).
-- **Model:** `claude-opus-5-5`, with `output_config.effort` set explicitly to `"medium"` and server-side fallbacks enabled (`betas=["server-side-fallback-2026-07-01"]`, `fallbacks="default"`).
+- **Model:** `claude-opus-5-5`, a deliberate override of the spec's "current Sonnet". Set `output_config.effort` explicitly to `"medium"` and enable server-side fallbacks (`betas=["server-side-fallback-2026-07-01"]`, `fallbacks="default"`). Record the model actually served in each `RunInfo.served_model`. If the checked and baseline runs of one sheet were served by different models, that sheet is marked `failed`.
+- **Keep every model call and price inside `vigil_pipeline/extract.py`.** A later switch to a cheaper model (e.g. `gemini-2.5-flash`) should touch only that file, and the eval must be rerun afterwards.
 - **Pricing for cost reporting:** Opus 5.5 is $4.00 per 1M input tokens and $20.00 per 1M output tokens.
-- **No API key in code.** The `Anthropic()` client resolves credentials from the environment (`ANTHROPIC_API_KEY` or an `ant auth login` profile).
-- **"Every field in the output appears exactly once with a status. A run never silently drops a field."** (spec §7)
-- **Checking is plain code with no AI** (spec §5.1). Confidence comes from the checks, never from the model rating itself.
-- **The demo never shows planted errors** (spec §5.3). If no real error is caught, report that honestly.
-- **Labels are checked by Richard:** every label row needs `checked=y`, otherwise the eval refuses to run (spec §5.3, to avoid a circular eval).
-- **Tests make no network calls.** The Claude client is always faked in tests.
-- **Field list:** the 25 fields in Task 1. This is the "about 22" from the spec, finalised here.
+- **No API key in code.** `Anthropic()` resolves credentials from the environment.
+- **"Every field appears exactly once with a status. A run never silently drops a field."** (spec §7) One bad sheet never stops a run.
+- **Checking is plain code with no AI.** Confidence comes from the checks.
+- **Never plant or hand-edit errors in outputs** (spec §5.3).
+- **Labels:** every row needs `checked=y`, every output sheet needs labels for all 20 source fields, and about 8 test sheets are labelled blind (with no prefill). Otherwise the eval refuses to run.
+- **Freeze before labelling:** prompts, ranges and the checker are tuned only on the `dev` split (about 5 sheets). The headline numbers come from the `test` split.
+- **Tests make no network calls.** The Claude client is always faked.
+- **Field list:** 25 fields, 20 of them `source` (scored). It's a passport-shaped slice of the Annex XIII content. Small cells like 18650s are not themselves in passport scope, so the demo says "passport-shaped data".
 
 ## Review Focus
 
-1. **PDF text with special characters** (Ω, °, µ, "ﬁ" ligatures, the "−" minus sign) must still match the model's quote. Pinned by `test_quote_matches_after_unicode_normalisation` in Task 3.
-2. **Decimal commas versus thousands separators:** "3,6 V" is 3.6 and "3,500 mAh" is 3500. A range like "2.5-4.2V" must not produce −4.2. Pinned by `test_numbers_in_handles_commas_and_ranges` in Task 2.
-3. **The model returns a duplicate, unknown or missing field id.** Keep the first known occurrence, drop unknown ids, and treat a missing id as not found. Pinned by `test_to_raw_fields_dedupes_and_drops_unknown` in Task 5 and `test_check_all_covers_every_field` in Task 4.
-4. **The model cites a page number that doesn't exist, or the wrong page.** The quote search must fall back to all pages. Pinned by `test_find_quote_falls_back_to_other_pages` in Task 3.
-5. **A typo in a label field id or datasheet id** must make the eval refuse with a clear error, not quietly score fewer fields. Pinned by `test_load_labels_rejects_unknown_field` in Task 8.
+1. **PDF text with special characters** (Ω, °, µ, "ﬁ", "−") must still match the model's quote. Pinned by `test_quote_matches_after_unicode_normalisation` in Task 3.
+2. **Decimal commas versus thousands separators, and hyphenated ranges.** Pinned by `test_numbers_in_handles_commas_and_ranges` in Task 2.
+3. **The model returns a duplicate, unknown or missing field id.** Pinned by `test_to_raw_fields_dedupes_and_drops_unknown` in Task 5 and `test_check_all_covers_every_field_and_derives_energy` in Task 4.
+4. **A corrupt PDF, malformed model JSON, or the models served differing between runs** marks that sheet `failed` and the run carries on. Pinned by `test_process_one_survives_corrupt_pdf` and `test_process_one_fails_on_served_model_mismatch` in Task 6.
+5. **Label mistakes** (unknown field, duplicate, incomplete sheet, numeric value without a convertible unit, output without labels) make the eval refuse with a clear error. Pinned by the `test_load_labels_*` and `test_evaluate_refuses_*` tests in Task 8.
 
 ---
 
 ### Task 1: Scaffold, field schema and output contract
 
 **Files:**
-- Create: `pipeline/pyproject.toml`, `pipeline/.gitignore`, `pipeline/vigil_pipeline/__init__.py`
+- Create: `pipeline/pyproject.toml`, `pipeline/.gitignore`, `pipeline/vigil_pipeline/__init__.py`, `pipeline/tests/__init__.py`
 - Create: `pipeline/vigil_pipeline/schema.py`
 - Create: `pipeline/vigil_pipeline/contract.py`
 - Test: `pipeline/tests/test_schema.py`
 
 **Interfaces:**
 - Produces:
-  - `Field` (frozen dataclass: `id, label, cluster, kind, vtype, unit, min, max, hint`)
-  - `FIELDS: tuple[Field, ...]`, `FIELD_BY_ID: dict[str, Field]`, `EXTRACTABLE: tuple[Field, ...]` (kinds `source`, `supplier`, `estimate`), `SOURCE_FIELDS` (kind `source`)
-  - `CLUSTERS`, `STATUSES`
-  - `FieldResult` and `RunInfo` dataclasses
-  - `DatasheetResult` dataclass with `to_dict() -> dict`
+  - `Field` (frozen dataclass: `id, label, cluster, kind, vtype, unit, min, max, hint, match`)
+  - `FIELDS`, `FIELD_BY_ID`, `EXTRACTABLE` (all kinds except `derived`), `SOURCE_FIELDS`
+  - `CLUSTERS`, `CLUSTER_LABELS`
+  - `FieldResult` (with `line` and `line_end`), `RunInfo` (with `served_model`), `DatasheetResult.to_dict()`, `STATUSES`
 
 - [ ] **Step 1: Create the project files**
 
@@ -78,34 +82,33 @@ __pycache__/
 out/
 ```
 
-`pipeline/vigil_pipeline/__init__.py`: an empty file.
+Create two empty files: `pipeline/vigil_pipeline/__init__.py` and `pipeline/tests/__init__.py`.
 
-Run:
-```bash
-cd pipeline && python3 -m venv .venv && source .venv/bin/activate && pip install -e '.[dev]'
-```
+Run: `cd pipeline && python3 -m venv .venv && source .venv/bin/activate && pip install -e '.[dev]'`
 Expected: the install succeeds.
 
 - [ ] **Step 2: Write the failing test**
 
 `pipeline/tests/test_schema.py`:
 ```python
-from dataclasses import asdict
-
-from vigil_pipeline.schema import FIELDS, FIELD_BY_ID, EXTRACTABLE, SOURCE_FIELDS, CLUSTERS
 from vigil_pipeline.contract import DatasheetResult, FieldResult, RunInfo, STATUSES
+from vigil_pipeline.schema import (CLUSTER_LABELS, CLUSTERS, EXTRACTABLE, FIELD_BY_ID, FIELDS,
+                                   SOURCE_FIELDS)
 
 
 def test_field_ids_unique_and_indexed():
     ids = [f.id for f in FIELDS]
     assert len(ids) == len(set(ids)) == 25
     assert set(FIELD_BY_ID) == set(ids)
+    assert len(SOURCE_FIELDS) == 20
 
 
 def test_fields_are_well_formed():
+    assert set(CLUSTER_LABELS) == set(CLUSTERS)
     for f in FIELDS:
         assert f.cluster in CLUSTERS
         assert f.kind in ("source", "derived", "estimate", "supplier")
+        assert f.match in ("exact", "tokens")
         if f.vtype == "number":
             assert f.unit and f.min is not None and f.max is not None and f.min < f.max
         else:
@@ -114,41 +117,52 @@ def test_fields_are_well_formed():
 
 def test_extractable_excludes_derived():
     assert all(f.kind != "derived" for f in EXTRACTABLE)
-    assert all(f.kind == "source" for f in SOURCE_FIELDS)
     assert FIELD_BY_ID["rated_energy"] not in EXTRACTABLE
+    assert "production estimate" in FIELD_BY_ID["carbon_footprint"].label
 
 
 def test_datasheet_result_to_dict_shape():
     fr = FieldResult(id="weight", label="Weight", cluster="general", kind="source",
                      status="verified-source", value=49.0, unit="g", raw_value="49", raw_unit="g",
-                     quote="Weight 49 g max", page=1, line=4, reason=None, estimate_note=None)
-    run = RunInfo(method="checked", model="claude-opus-5-5", elapsed_s=3.2,
-                  input_tokens=1000, output_tokens=500, cost_usd=0.014)
+                     quote="Weight 49 g max", page=1, line=4, line_end=4)
+    run = RunInfo(method="checked", model="claude-opus-5-5", served_model="claude-opus-5-5",
+                  elapsed_s=3.2, input_tokens=1000, output_tokens=500, cost_usd=0.014)
     d = DatasheetResult(id="x", title="X", source_file="x.pdf",
-                        pages=[{"number": 1, "lines": ["Weight 49 g max"]}],
-                        fields=[fr], run=run).to_dict()
-    assert d["fields"][0]["status"] in STATUSES
-    assert d["run"]["method"] == "checked"
-    assert d["pages"][0]["lines"] == ["Weight 49 g max"]
+                        pages=[{"number": 1, "lines": ["Weight 49 g max"]}], fields=[fr], run=run).to_dict()
+    assert d["fields"][0]["status"] in STATUSES and d["fields"][0]["line_end"] == 4
+    assert d["run"]["served_model"] == "claude-opus-5-5"
+    assert d["contract_version"] == 1
 ```
 
 - [ ] **Step 3: Run the test to verify it fails**
 
 Run: `pytest tests/test_schema.py -v`
-Expected: FAIL with `ModuleNotFoundError: No module named 'vigil_pipeline.schema'`
+Expected: FAIL with `ModuleNotFoundError: No module named 'vigil_pipeline.contract'`
 
 - [ ] **Step 4: Implement `schema.py` and `contract.py`**
 
 `pipeline/vigil_pipeline/schema.py`:
 ```python
-"""The battery-passport field slice used by the demo (spec §5.2), finalised at 25 fields."""
+"""A passport-shaped slice of the EU battery passport (Reg. 2023/1542 Annex XIII), 25 fields.
+
+Not every field is passport-mandated (e.g. max discharge current is a datasheet field kept for
+context; UN 38.3 / EU declaration sit in conformity documentation)."""
 from dataclasses import dataclass
 from typing import Literal
 
 Kind = Literal["source", "derived", "estimate", "supplier"]
 VType = Literal["number", "text"]
+Match = Literal["exact", "tokens"]
 
 CLUSTERS = ("general", "performance", "materials", "carbon", "circularity", "compliance")
+CLUSTER_LABELS = {
+    "general": "General information",
+    "performance": "Performance & durability",
+    "materials": "Materials & composition",
+    "carbon": "Carbon footprint",
+    "circularity": "Circularity & safety",
+    "compliance": "Compliance",
+}
 
 
 @dataclass(frozen=True)
@@ -162,6 +176,7 @@ class Field:
     min: float | None = None
     max: float | None = None
     hint: str = ""
+    match: Match = "exact"  # text fields only: exact (identifiers) or tokens (free text)
 
 
 FIELDS: tuple[Field, ...] = (
@@ -171,7 +186,7 @@ FIELDS: tuple[Field, ...] = (
           hint="portable, LMT, EV, industrial or SLI - only if the document states it"),
     Field("chemistry", "Chemistry", "general", "source", "text",
           hint="cathode chemistry, e.g. NMC, LFP, NCA"),
-    Field("weight", "Weight", "general", "source", "number", "g", 1, 500_000),
+    Field("weight", "Weight", "general", "source", "number", "g", 1, 1_500_000),
     Field("manufacturing_date", "Manufacturing date", "general", "supplier", "text"),
     Field("rated_capacity", "Rated capacity", "performance", "source", "number", "Ah", 0.01, 2000,
           hint="nominal or rated capacity, not minimum capacity"),
@@ -183,7 +198,7 @@ FIELDS: tuple[Field, ...] = (
     Field("max_discharge_current", "Max continuous discharge current", "performance", "source",
           "number", "A", 0.01, 5000),
     Field("internal_resistance", "Internal resistance", "performance", "source", "number",
-          "mΩ", 0.01, 100_000, hint="AC or DC impedance; say which in the quote"),
+          "mΩ", 0.01, 100_000, hint="AC or DC impedance; the quote must show which"),
     Field("expected_lifetime_cycles", "Expected lifetime", "performance", "source", "number",
           "cycles", 10, 100_000),
     Field("capacity_threshold_pct", "Capacity threshold for exhaustion", "performance", "source",
@@ -193,15 +208,19 @@ FIELDS: tuple[Field, ...] = (
     Field("operating_temp_max", "Max operating temperature", "performance", "source", "number",
           "°C", 20, 120, hint="highest discharge temperature"),
     Field("rated_energy", "Rated energy", "performance", "derived", "number", "Wh", 0.01, 2_000_000),
-    Field("hazardous_substances", "Hazardous substances", "materials", "source", "text"),
-    Field("critical_raw_materials", "Critical raw materials content", "materials", "supplier", "text"),
-    Field("recycled_content_share", "Recycled content share", "materials", "supplier", "text"),
-    Field("carbon_footprint", "Carbon footprint", "carbon", "estimate", "number",
+    Field("hazardous_substances", "Hazardous substances", "materials", "source", "text", match="tokens"),
+    Field("critical_raw_materials", "Critical raw materials content", "materials", "supplier", "text",
+          match="tokens"),
+    Field("recycled_content_share", "Recycled content share", "materials", "supplier", "text",
+          match="tokens"),
+    Field("carbon_footprint", "Carbon footprint (production estimate)", "carbon", "estimate", "number",
           "kg CO2e/kWh", 10, 500),
-    Field("dismantling_info", "Dismantling & removal information", "circularity", "source", "text"),
-    Field("extinguishing_agent", "Extinguishing agent", "circularity", "source", "text"),
-    Field("un38_3_test", "UN 38.3 transport test", "compliance", "source", "text"),
-    Field("eu_declaration_ref", "EU declaration of conformity", "compliance", "source", "text"),
+    Field("dismantling_info", "Dismantling & removal information", "circularity", "source", "text",
+          match="tokens"),
+    Field("extinguishing_agent", "Extinguishing agent", "circularity", "source", "text", match="tokens"),
+    Field("un38_3_test", "UN 38.3 transport test", "compliance", "source", "text", match="tokens"),
+    Field("eu_declaration_ref", "EU declaration of conformity", "compliance", "source", "text",
+          match="tokens"),
 )
 
 FIELD_BY_ID: dict[str, Field] = {f.id: f for f in FIELDS}
@@ -212,7 +231,7 @@ SOURCE_FIELDS: tuple[Field, ...] = tuple(f for f in FIELDS if f.kind == "source"
 `pipeline/vigil_pipeline/contract.py`:
 ```python
 """The JSON contract between the pipeline and the demo app. Plan 2 mirrors these shapes in TypeScript."""
-from dataclasses import dataclass, asdict, field as dc_field
+from dataclasses import asdict, dataclass
 from typing import Literal
 
 Status = Literal["verified-source", "review", "estimate", "supplier", "derived"]
@@ -233,6 +252,7 @@ class FieldResult:
     quote: str | None = None
     page: int | None = None
     line: int | None = None
+    line_end: int | None = None
     reason: str | None = None
     estimate_note: str | None = None
 
@@ -241,6 +261,7 @@ class FieldResult:
 class RunInfo:
     method: Literal["checked", "baseline"]
     model: str
+    served_model: str
     elapsed_s: float
     input_tokens: int
     output_tokens: int
@@ -283,7 +304,8 @@ git commit -m "feat(pipeline): scaffold with field schema and output contract"
 
 **Interfaces:**
 - Produces:
-  - `normalise_unit(raw: str) -> tuple[str, float] | None` returns `(canonical_unit, factor)`
+  - `normalise_unit(raw: str) -> tuple[str, float] | None`
+  - `allowed_units(canonical: str) -> list[str]`
   - `numbers_in(text: str) -> list[float]`
   - `parse_number(text: str) -> float | None`
 
@@ -292,7 +314,8 @@ git commit -m "feat(pipeline): scaffold with field schema and output contract"
 `pipeline/tests/test_units.py`:
 ```python
 import pytest
-from vigil_pipeline.units import normalise_unit, numbers_in, parse_number
+
+from vigil_pipeline.units import allowed_units, normalise_unit, numbers_in, parse_number
 
 
 @pytest.mark.parametrize("raw,expected", [
@@ -309,6 +332,12 @@ def test_normalise_unit(raw, expected):
 def test_normalise_unit_unknown():
     assert normalise_unit("furlongs") is None
     assert normalise_unit("") is None
+
+
+def test_allowed_units():
+    assert allowed_units("Ah") == ["Ah", "mAh"]
+    assert allowed_units("mΩ") == ["mΩ", "Ω"]
+    assert allowed_units("kg CO2e/kWh") == []
 
 
 def test_numbers_in_handles_commas_and_ranges():
@@ -330,7 +359,7 @@ def test_parse_number():
 - [ ] **Step 2: Run the test to verify it fails**
 
 Run: `pytest tests/test_units.py -v`
-Expected: FAIL with `ModuleNotFoundError: No module named 'vigil_pipeline.units'`
+Expected: FAIL with `ModuleNotFoundError`
 
 - [ ] **Step 3: Implement `units.py`**
 
@@ -353,6 +382,11 @@ _UNITS: dict[str, tuple[str, float]] = {
     "cycles": ("cycles", 1.0), "cycle": ("cycles", 1.0), "cyc": ("cycles", 1.0),
 }
 
+# Units offered in the demo's "fix" input, in display order (canonical first).
+_DISPLAY = {"ah": "Ah", "mah": "mAh", "v": "V", "mv": "mV", "a": "A", "ma": "mA", "wh": "Wh",
+            "kwh": "kWh", "mω": "mΩ", "ω": "Ω", "g": "g", "kg": "kg", "%": "%", "°c": "°C",
+            "cycles": "cycles"}
+
 # A minus sign only counts when it isn't joining two numbers ("2.5-4.2" is a range).
 _NUM_RE = re.compile(r"(?:(?<![\w.])-)?\d+(?:[ ,]\d{3})*(?:[.,]\d+)?")
 _PARTS_RE = re.compile(r"(-?\d+(?:[ ,]\d{3})*)([.,]\d+)?")
@@ -362,6 +396,10 @@ def normalise_unit(raw: str) -> tuple[str, float] | None:
     key = unicodedata.normalize("NFKC", raw or "").casefold()
     key = re.sub(r"\s+", "", key).replace("º", "°")
     return _UNITS.get(key)
+
+
+def allowed_units(canonical: str) -> list[str]:
+    return [label for key, label in _DISPLAY.items() if _UNITS[key][0] == canonical]
 
 
 def _clean(text: str) -> str:
@@ -384,12 +422,10 @@ def parse_number(text: str) -> float | None:
     return nums[0] if nums else None
 ```
 
-Note: NFKC turns "℃" into "°C" and the ohm sign into Greek Ω, so `casefold` gives "ω".
-
 - [ ] **Step 4: Run the test to verify it passes**
 
 Run: `pytest tests/test_units.py -v`
-Expected: all pass. If `" m A h "` fails, check that whitespace is stripped before lookup.
+Expected: all pass
 
 - [ ] **Step 5: Commit**
 
@@ -409,49 +445,50 @@ git commit -m "feat(pipeline): unit normalisation and number parsing"
 
 **Interfaces:**
 - Produces:
-  - `Page` (dataclass `number: int, lines: list[str]`)
-  - `pdf_to_pages(path) -> list[Page]`
-  - `has_text(pages) -> bool`
-  - `render_for_prompt(pages) -> str`
-  - `pages_to_dicts(pages) -> list[dict]`
-  - `norm(s: str) -> str`
-  - `find_quote(quote: str, pages: list[Page], page_hint: int | None) -> tuple[int, int] | None`, which returns 1-indexed `(page, line)`
+  - `Page` (dataclass `number, lines`)
+  - `pdf_to_pages(path)`, `has_text(pages)`, `render_for_prompt(pages)`, `pages_to_dicts(pages)`
+  - `norm(s)`, `MIN_QUOTE_CHARS = 6`
+  - `find_quote(quote, pages, page_hint) -> tuple[int, int, int] | None`, which returns 1-indexed `(page, line, line_end)`
 
 - [ ] **Step 1: Write the failing test**
 
 `pipeline/tests/test_quotes.py`:
 ```python
-from vigil_pipeline.ingest import Page, has_text, render_for_prompt, pages_to_dicts
+from vigil_pipeline.ingest import Page, has_text, pages_to_dicts, render_for_prompt
 from vigil_pipeline.quotes import find_quote, norm
 
 PAGES = [
     Page(1, ["LG Chem", "Model INR18650 MJ1", "Nominal Capacity  3500 mAh", "Weight 49.0 g max"]),
-    Page(2, ["Operating temperature −20 ℃ ~ 60 ℃", "AC impedance ≤ 35 mΩ", "manu-", "facturer: LG Energy Solution"]),
+    Page(2, ["Operating temperature −20 ℃ ~ 60 ℃", "AC impedance ≤ 35 mΩ", "manu-",
+             "facturer: LG Energy Solution", "Charge voltage", "4.2 V"]),
 ]
 
 
 def test_find_quote_exact_and_whitespace():
-    assert find_quote("Nominal Capacity 3500 mAh", PAGES, 1) == (1, 3)
+    assert find_quote("Nominal Capacity 3500 mAh", PAGES, 1) == (1, 3, 3)
 
 
 def test_quote_matches_after_unicode_normalisation():
-    assert find_quote("Operating temperature -20 °C ~ 60 °C", PAGES, 2) == (2, 1)
-    assert find_quote("ac impedance ≤ 35 mΩ", PAGES, 2) == (2, 2)
+    assert find_quote("Operating temperature -20 °C ~ 60 °C", PAGES, 2) == (2, 1, 1)
+    assert find_quote("ac impedance ≤ 35 mΩ", PAGES, 2) == (2, 2, 2)
 
 
 def test_find_quote_falls_back_to_other_pages():
-    assert find_quote("Weight 49.0 g max", PAGES, 7) == (1, 4)
-    assert find_quote("Weight 49.0 g max", PAGES, None) == (1, 4)
+    assert find_quote("Weight 49.0 g max", PAGES, 7) == (1, 4, 4)
+    assert find_quote("Weight 49.0 g max", PAGES, None) == (1, 4, 4)
+
+
+def test_find_quote_spanning_two_lines():
+    assert find_quote("Charge voltage 4.2 V", PAGES, 2) == (2, 5, 6)
 
 
 def test_find_quote_across_hyphenated_line_break():
-    loc = find_quote("manufacturer: LG Energy Solution", PAGES, 2)
-    assert loc is not None and loc[0] == 2
+    assert find_quote("manufacturer: LG Energy Solution", PAGES, 2) == (2, 3, 4)
 
 
-def test_find_quote_rejects_invented_and_tiny_quotes():
+def test_find_quote_rejects_invented_and_short_quotes():
     assert find_quote("Nominal Capacity 3600 mAh", PAGES, 1) is None
-    assert find_quote("mA", PAGES, 1) is None
+    assert find_quote("4.2 V", PAGES, 2) is None
 
 
 def test_norm_casefolds_and_collapses():
@@ -512,13 +549,16 @@ def pages_to_dicts(pages: list[Page]) -> list[dict]:
 
 `pipeline/vigil_pipeline/quotes.py`:
 ```python
-"""Checks that a model-supplied quote really appears in the datasheet, and locates it."""
+"""Checks that a model-supplied quote really appears in the datasheet, and locates it.
+
+Quotes shorter than MIN_QUOTE_CHARS are rejected: a bare "3.6 V" would match almost anywhere, so
+the model must quote the value together with its label."""
 import re
 import unicodedata
 
 from .ingest import Page
 
-MIN_QUOTE_CHARS = 3
+MIN_QUOTE_CHARS = 6
 
 
 def norm(s: str) -> str:
@@ -531,12 +571,11 @@ def _dehyphen(s: str) -> str:
     return re.sub(r"(?<=[a-z])- (?=[a-z])", "", s)
 
 
-def find_quote(quote: str, pages: list[Page], page_hint: int | None) -> tuple[int, int] | None:
+def find_quote(quote: str, pages: list[Page], page_hint: int | None) -> tuple[int, int, int] | None:
     q = norm(quote)
     if len(q) < MIN_QUOTE_CHARS:
         return None
-    ordered = sorted(pages, key=lambda p: p.number != page_hint)
-    for page in ordered:
+    for page in sorted(pages, key=lambda p: p.number != page_hint):
         normed = [norm(line) for line in page.lines]
         offsets, pos = [], 0
         for line in normed:
@@ -545,12 +584,14 @@ def find_quote(quote: str, pages: list[Page], page_hint: int | None) -> tuple[in
         joined = " ".join(normed)
         idx = joined.find(q)
         if idx >= 0:
-            line_idx = max(k for k, off in enumerate(offsets) if off <= idx)
-            return page.number, line_idx + 1
+            end = idx + len(q) - 1
+            first = max(k for k, off in enumerate(offsets) if off <= idx)
+            last = max(k for k, off in enumerate(offsets) if off <= end)
+            return page.number, first + 1, last + 1
         if _dehyphen(q) in _dehyphen(joined):
-            first_word = _dehyphen(q).split(" ")[0][:4]
-            line_idx = next((k for k, ln in enumerate(normed) if first_word in ln), 0)
-            return page.number, line_idx + 1
+            stem = _dehyphen(q).split(" ")[0][:4]
+            first = next((k for k, ln in enumerate(normed) if stem in ln), 0)
+            return page.number, first + 1, min(first + 2, len(normed))
     return None
 ```
 
@@ -561,11 +602,11 @@ Expected: all pass
 
 - [ ] **Step 5: Smoke-test ingest on one real PDF**
 
-Download any one public cell datasheet into `pipeline/datasheets/`, e.g. a Molicel or Samsung 21700 spec sheet. Then run:
+Download one public cell datasheet (e.g. a Molicel or Samsung 21700 spec sheet) into `pipeline/datasheets/`, then run:
 ```bash
 python -c "from vigil_pipeline.ingest import *; p=pdf_to_pages('datasheets/<file>.pdf'); print(has_text(p)); print(render_for_prompt(p)[:800])"
 ```
-Expected: `True`, then readable numbered lines. Table rows should come out as single lines.
+Expected: `True`, then readable numbered lines.
 
 - [ ] **Step 6: Commit**
 
@@ -585,21 +626,20 @@ git commit -m "feat(pipeline): PDF ingest and quote matching"
 
 **Interfaces:**
 - Consumes:
-  - `FIELDS`, `FIELD_BY_ID`, `Field` (Task 1)
-  - `FieldResult` (Task 1)
+  - `FIELDS`, `FIELD_BY_ID`, `Field`, `FieldResult` (Task 1)
   - `normalise_unit`, `numbers_in`, `parse_number` (Task 2)
   - `Page`, `find_quote`, `norm` (Task 3)
 - Produces:
-  - `RawField` (dataclass `id: str, found: bool, value: str, unit: str, quote: str, page: int | None`)
-  - `check_field(field, raw: RawField | None, pages) -> FieldResult`
-  - `check_all(raw: dict[str, RawField], pages) -> list[FieldResult]`, which returns one result per item in `FIELDS`, in `FIELDS` order
+  - `RawField` (`id, found, value, unit, quote, page`)
+  - `check_field(field, raw, pages) -> FieldResult`
+  - `check_all(raw: dict[str, RawField], pages) -> list[FieldResult]`, one result per item in `FIELDS`, in `FIELDS` order
   - `CARBON_ESTIMATE`
 
 - [ ] **Step 1: Write the failing test**
 
 `pipeline/tests/test_check.py`:
 ```python
-from vigil_pipeline.check import RawField, check_field, check_all
+from vigil_pipeline.check import RawField, check_all, check_field
 from vigil_pipeline.ingest import Page
 from vigil_pipeline.schema import FIELD_BY_ID, FIELDS
 
@@ -616,7 +656,8 @@ def raw(id, value, unit="", quote="", page=1, found=True):
 def test_verified_number_is_converted():
     r = check_field(FIELD_BY_ID["rated_capacity"],
                     raw("rated_capacity", "3500", "mAh", "Nominal Capacity 3500 mAh"), PAGES)
-    assert (r.status, r.value, r.unit, r.page, r.line, r.reason) == ("verified-source", 3.5, "Ah", 1, 2, None)
+    assert (r.status, r.value, r.unit, r.page, r.line, r.line_end, r.reason) == \
+        ("verified-source", 3.5, "Ah", 1, 2, 2, None)
 
 
 def test_invented_quote_goes_to_review_but_keeps_value():
@@ -653,7 +694,8 @@ def test_not_found_statuses_by_kind():
     assert check_field(FIELD_BY_ID["manufacturer"], None, PAGES).status == "review"
     assert check_field(FIELD_BY_ID["recycled_content_share"], None, PAGES).status == "supplier"
     est = check_field(FIELD_BY_ID["carbon_footprint"], raw("carbon_footprint", "", found=False), PAGES)
-    assert est.status == "estimate" and est.value == 85.0 and "IVL" in est.estimate_note
+    assert est.status == "estimate" and est.value == 83.5
+    assert "IVL" in est.estimate_note and "cradle-to-gate" in est.estimate_note
 
 
 def test_check_all_covers_every_field_and_derives_energy():
@@ -687,14 +729,16 @@ Expected: FAIL with `ModuleNotFoundError`
 ```python
 """Industry-average defaults for estimable fields (spec §5.1 'estimate').
 
-Source: IVL Swedish Environmental Research Institute (Emilsson & Dahllöf, 2019), Lithium-Ion
-Vehicle Battery Production, which reports 61-106 kg CO2e per kWh of battery capacity for
-production. The demo uses the midpoint. Verify against the report before publishing (Task 9).
-"""
+Source: IVL Swedish Environmental Research Institute, report C444 (Emilsson & Dahllöf, 2019),
+"Lithium-Ion Vehicle Battery Production" - 61-106 kg CO2e per kWh of battery capacity, production
+only (cradle-to-gate). The regulation's passport carbon footprint is a life-cycle value with a
+different functional unit, so this is shown as a labelled stand-in, never as a declared value."""
 CARBON_ESTIMATE = {
-    "value": 85.0,
+    "value": 83.5,
     "unit": "kg CO2e/kWh",
-    "note": "Estimate: midpoint of the 61-106 kg CO2e/kWh production range in IVL (2019).",
+    "note": ("Estimate, not a declared value: midpoint of the 61-106 kg CO2e per kWh of battery "
+             "capacity range for production (cradle-to-gate) in IVL report C444 (2019). The "
+             "passport's own figure is a life-cycle value."),
 }
 ```
 
@@ -737,7 +781,7 @@ def check_field(field: Field, raw: RawField | None, pages: list[Page]) -> FieldR
         return _base(field, status="review", value=None, reason="not found in document")
 
     loc = find_quote(raw.quote, pages, raw.page)
-    page, line = loc if loc else (raw.page, None)
+    page, line, line_end = loc if loc else (raw.page, None, None)
     reasons: list[str] = []
     if loc is None:
         reasons.append("quote not found in document")
@@ -763,9 +807,9 @@ def check_field(field: Field, raw: RawField | None, pages: list[Page]) -> FieldR
             if not (field.min <= value <= field.max):
                 reasons.append("value outside plausible range")
 
-    status = "review" if reasons else "verified-source"
-    return _base(field, status=status, value=value, raw_value=raw.value, raw_unit=raw.unit or None,
-                 quote=raw.quote, page=page, line=line, reason=reasons[0] if reasons else None)
+    return _base(field, status="review" if reasons else "verified-source", value=value,
+                 raw_value=raw.value, raw_unit=raw.unit or None, quote=raw.quote, page=page,
+                 line=line, line_end=line_end, reason=reasons[0] if reasons else None)
 
 
 def _derive_energy(field: Field, by_id: dict[str, FieldResult]) -> FieldResult:
@@ -811,16 +855,15 @@ git commit -m "feat(pipeline): deterministic checker with status rules"
 
 **Interfaces:**
 - Consumes:
-  - `EXTRACTABLE`, `FIELD_BY_ID` (Task 1)
-  - `RunInfo` (Task 1)
+  - `EXTRACTABLE`, `RunInfo` (Task 1)
   - `Page`, `render_for_prompt` (Task 3)
   - `RawField` (Task 4)
 - Produces:
-  - `MODEL`, `PRICE_IN_PER_M`, `PRICE_OUT_PER_M`
-  - `ExtractionError(Exception)`
-  - `to_raw_fields(data: dict) -> dict[str, RawField]`
-  - `extract_checked(client, pages) -> tuple[dict[str, RawField], RunInfo]`
-  - `extract_baseline(client, pages) -> tuple[dict[str, RawField], RunInfo]`. Baseline `RawField`s have `quote=""` and `page=None`.
+  - `MODEL`, `PRICE_IN_PER_M`, `PRICE_OUT_PER_M`, `ExtractionError`, `CHECKED_SYSTEM`, `BASELINE_SYSTEM`
+  - `to_raw_fields(data) -> dict[str, RawField]`
+  - `extract_checked(client, pages) -> tuple[dict[str, RawField], RunInfo, str]`
+  - `extract_baseline(client, pages) -> tuple[dict[str, RawField], RunInfo, str]`
+  - In both, the third element is the raw response text. Baseline `RawField`s have `quote=""` and `page=None`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -831,27 +874,29 @@ from types import SimpleNamespace
 
 import pytest
 
-from vigil_pipeline.extract import (MODEL, ExtractionError, extract_baseline, extract_checked,
-                                    to_raw_fields)
+from vigil_pipeline.extract import (BASELINE_SYSTEM, CHECKED_SYSTEM, MODEL, ExtractionError,
+                                    extract_baseline, extract_checked, to_raw_fields)
 from vigil_pipeline.ingest import Page
 
 PAGES = [Page(1, ["Nominal Capacity 3500 mAh"])]
 
 
 class FakeClient:
-    def __init__(self, payload, stop_reason="end_turn"):
+    """Stands in for anthropic.Anthropic(). `served` may be a list to vary the model per call."""
+
+    def __init__(self, payload, stop_reason="end_turn", served="claude-opus-5-5"):
         self.calls = []
-        payload_text = json.dumps(payload)
+        text = json.dumps(payload)
+        served_list = served if isinstance(served, list) else [served]
         outer = self
 
         class _Messages:
             def create(self, **kw):
                 outer.calls.append(kw)
+                model = served_list[min(len(outer.calls), len(served_list)) - 1]
                 return SimpleNamespace(
-                    content=[SimpleNamespace(type="text", text=payload_text)],
-                    stop_reason=stop_reason,
-                    usage=SimpleNamespace(input_tokens=10_000, output_tokens=2_000),
-                )
+                    content=[SimpleNamespace(type="text", text=text)], stop_reason=stop_reason,
+                    model=model, usage=SimpleNamespace(input_tokens=10_000, output_tokens=2_000))
 
         self.beta = SimpleNamespace(messages=_Messages())
 
@@ -860,9 +905,9 @@ ONE = {"fields": [{"id": "rated_capacity", "found": True, "value": "3500", "unit
                    "quote": "Nominal Capacity 3500 mAh", "page": 1}]}
 
 
-def test_extract_checked_request_and_cost():
-    client = FakeClient(ONE)
-    raw, run = extract_checked(client, PAGES)
+def test_extract_checked_request_cost_and_served_model():
+    client = FakeClient(ONE, served="claude-opus-4-8")
+    raw, run, text = extract_checked(client, PAGES)
     call = client.calls[0]
     assert call["model"] == MODEL == "claude-opus-5-5"
     assert call["output_config"]["effort"] == "medium"
@@ -870,14 +915,18 @@ def test_extract_checked_request_and_cost():
     assert call["betas"] == ["server-side-fallback-2026-07-01"] and call["fallbacks"] == "default"
     assert "[p1 L1] Nominal Capacity 3500 mAh" in call["messages"][0]["content"]
     assert raw["rated_capacity"].quote == "Nominal Capacity 3500 mAh"
-    assert run.method == "checked" and run.cost_usd == pytest.approx(10_000 * 4 / 1e6 + 2_000 * 20 / 1e6)
+    assert run.method == "checked" and run.served_model == "claude-opus-4-8"
+    assert run.cost_usd == pytest.approx(10_000 * 4 / 1e6 + 2_000 * 20 / 1e6)
+    assert json.loads(text) == ONE
 
 
-def test_extract_baseline_has_no_quotes():
+def test_baseline_gets_same_rules_but_no_quotes():
+    for rule in ("Not in the document", "main/first model", "Never infer"):
+        assert rule in CHECKED_SYSTEM and rule in BASELINE_SYSTEM
     client = FakeClient({"fields": [{"id": "rated_capacity", "found": True, "value": "3500", "unit": "mAh"}]})
-    raw, run = extract_baseline(client, PAGES)
-    schema_item = client.calls[0]["output_config"]["format"]["schema"]["properties"]["fields"]["items"]
-    assert "quote" not in schema_item["properties"]
+    raw, run, _ = extract_baseline(client, PAGES)
+    item = client.calls[0]["output_config"]["format"]["schema"]["properties"]["fields"]["items"]
+    assert "quote" not in item["properties"]
     assert raw["rated_capacity"].quote == "" and raw["rated_capacity"].page is None
     assert run.method == "baseline"
 
@@ -907,7 +956,10 @@ Expected: FAIL with `ModuleNotFoundError`
 
 `pipeline/vigil_pipeline/extract.py`:
 ```python
-"""Claude calls: extract-then-check (with quotes) and the single-prompt baseline (spec §5.1)."""
+"""Model calls: extract-then-check (with quotes) and the single-prompt baseline (spec §5.1).
+
+All provider-specific code and prices live here, so swapping to a cheaper model is a one-file change.
+Both prompts share the same rules; the only difference is that the checked prompt asks for quotes."""
 import json
 import time
 
@@ -926,6 +978,22 @@ class ExtractionError(Exception):
     pass
 
 
+_COMMON = """You extract EU battery passport data from one manufacturer datasheet.
+Return exactly one entry per field id listed.
+"Not in the document" is a valid and expected answer: set found=false and leave the other values
+empty. Never infer or calculate a value.
+If the datasheet lists several variants, use the main/first model.
+value: exactly as written (numbers as written, e.g. "3500"). unit: exactly as written next to the
+value (e.g. "mAh"), or "" for text fields."""
+
+CHECKED_SYSTEM = _COMMON + """
+quote: a short verbatim span copied from the datasheet containing the value together with its label
+(e.g. "Nominal Capacity 3500 mAh"). Copy characters exactly; do not paraphrase or fix typos.
+page: the page number from the [pN L…] marker of the quoted line."""
+
+BASELINE_SYSTEM = _COMMON
+
+
 def _field_brief() -> str:
     lines = []
     for f in EXTRACTABLE:
@@ -933,21 +1001,6 @@ def _field_brief() -> str:
         hint = f" - {f.hint}" if f.hint else ""
         lines.append(f"- {f.id}: {f.label}{unit}{hint}")
     return "\n".join(lines)
-
-
-CHECKED_SYSTEM = """You extract EU battery passport data from one manufacturer datasheet.
-Return exactly one entry per field id listed. For each field:
-- found: true only if the datasheet states the value. "Not in the document" is a valid and expected
-  answer - set found=false and leave value, unit and quote empty. Never infer or calculate a value.
-- value: the value exactly as written (numbers as written, e.g. "3500").
-- unit: the unit exactly as written next to the value (e.g. "mAh"), or "" for text fields.
-- quote: a short verbatim span copied from the datasheet that contains the value. Copy characters
-  exactly; do not paraphrase or fix typos.
-- page: the page number from the [pN L…] marker of the quoted line.
-If the datasheet lists several variants, use the main/first model and quote that row."""
-
-BASELINE_SYSTEM = """You extract EU battery passport data from one manufacturer datasheet.
-Return exactly one entry per field id listed, with found, value and unit."""
 
 
 def _schema(with_quotes: bool) -> dict:
@@ -998,12 +1051,15 @@ def _call(client, system: str, pages: list[Page], with_quotes: bool, method: str
     elapsed = time.monotonic() - start
     if resp.stop_reason in ("refusal", "max_tokens"):
         raise ExtractionError(f"stop_reason={resp.stop_reason}")
-    text = next(b.text for b in resp.content if b.type == "text")
+    text = next((b.text for b in resp.content if b.type == "text"), None)
+    if text is None:
+        raise ExtractionError("no text block in response")
     usage = resp.usage
     cost = usage.input_tokens * PRICE_IN_PER_M / 1e6 + usage.output_tokens * PRICE_OUT_PER_M / 1e6
-    run = RunInfo(method=method, model=MODEL, elapsed_s=round(elapsed, 2),
-                  input_tokens=usage.input_tokens, output_tokens=usage.output_tokens, cost_usd=round(cost, 6))
-    return to_raw_fields(json.loads(text)), run
+    run = RunInfo(method=method, model=MODEL, served_model=getattr(resp, "model", MODEL),
+                  elapsed_s=round(elapsed, 2), input_tokens=usage.input_tokens,
+                  output_tokens=usage.output_tokens, cost_usd=round(cost, 6))
+    return to_raw_fields(json.loads(text)), run, text
 
 
 def extract_checked(client, pages: list[Page]):
@@ -1011,8 +1067,7 @@ def extract_checked(client, pages: list[Page]):
 
 
 def extract_baseline(client, pages: list[Page]):
-    raw, run = _call(client, BASELINE_SYSTEM, pages, with_quotes=False, method="baseline")
-    return raw, run
+    return _call(client, BASELINE_SYSTEM, pages, with_quotes=False, method="baseline")
 ```
 
 - [ ] **Step 4: Run the test to verify it passes**
@@ -1024,13 +1079,13 @@ Expected: all pass
 
 ```bash
 python -c "
-import anthropic, json
+import anthropic
 from vigil_pipeline.ingest import pdf_to_pages
 from vigil_pipeline.extract import extract_checked
-raw, run = extract_checked(anthropic.Anthropic(max_retries=4), pdf_to_pages('datasheets/<file>.pdf'))
+raw, run, _ = extract_checked(anthropic.Anthropic(max_retries=4), pdf_to_pages('datasheets/<file>.pdf'))
 print(run); print({k: (v.found, v.value, v.unit) for k, v in raw.items()})"
 ```
-Expected: a `RunInfo` with tokens and cost, and plausible values. If the SDK rejects `fallbacks=` as an unexpected keyword (an older SDK), upgrade with `pip install -U anthropic`, then pass it through `extra_body={"fallbacks": "default"}` and update the test.
+Expected: a `RunInfo` with tokens, cost and served model, plus plausible values. If the SDK rejects `betas=` or `fallbacks=` (an older SDK), run `pip install -U anthropic`. If it still rejects them, pass `extra_body={"fallbacks": "default"}` and `extra_headers={"anthropic-beta": "server-side-fallback-2026-07-01"}` on `client.messages.create` instead, and update the test to match.
 
 - [ ] **Step 6: Commit**
 
@@ -1044,6 +1099,7 @@ git commit -m "feat(pipeline): Claude extract-then-check and baseline calls"
 ### Task 6: Run command (whole folder → `out/`)
 
 **Files:**
+- Create: `pipeline/vigil_pipeline/sources.py`
 - Create: `pipeline/vigil_pipeline/run.py`
 - Create: `pipeline/datasheets/sources.csv`
 - Test: `pipeline/tests/test_run.py`
@@ -1052,12 +1108,17 @@ git commit -m "feat(pipeline): Claude extract-then-check and baseline calls"
 - Consumes:
   - `pdf_to_pages`, `has_text`, `pages_to_dicts` (Task 3)
   - `check_all` (Task 4)
-  - `extract_checked`, `extract_baseline`, `ExtractionError` (Task 5)
+  - `extract_checked`, `extract_baseline` (Task 5)
   - `DatasheetResult` (Task 1)
 - Produces:
-  - `process_one(pdf_path, title, client, out_dir, extract_pages=pdf_to_pages) -> str`, which returns `"ok" | "skipped" | "failed"`
-  - `main(argv=None)`, run as `python -m vigil_pipeline.run [--only ID ...]`
-  - Output files: `out/<id>.json` (a `DatasheetResult`), `out/baseline/<id>.json` (`{"id", "fields": [{id, found, value, unit}], "run": RunInfo}`), and `out/run-log.json` (a list of `{id, status, detail}`)
+  - `read_sources(path) -> dict[str, dict]`, keyed by id. The CSV columns are `id,title,url,manufacturer,licence_note,split,notes`, where `split` is `dev` or `test`.
+  - `process_one(pdf_path, title, client, out_dir, extract_pages=pdf_to_pages) -> "ok" | "skipped" | "failed"`
+  - `main(argv=None)`, run as `python -m vigil_pipeline.run [--only ID ...] [--split dev|test]`
+  - Output files:
+    - `out/<id>.json`
+    - `out/baseline/<id>.json`, as `{id, fields: [{id, found, value, unit}], run}`
+    - `out/raw/<id>.checked.txt` and `out/raw/<id>.baseline.txt`
+    - `out/run-log.json`, appended after every sheet
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1069,117 +1130,167 @@ from tests.test_extract import FakeClient
 from vigil_pipeline.ingest import Page
 from vigil_pipeline.run import process_one
 from vigil_pipeline.schema import FIELDS
+from vigil_pipeline.sources import read_sources
 
 TEXT_PAGES = [Page(1, ["Nominal Capacity 3500 mAh"] + ["filler text line " * 4] * 5)]
 PAYLOAD = {"fields": [{"id": "rated_capacity", "found": True, "value": "3500", "unit": "mAh",
                        "quote": "Nominal Capacity 3500 mAh", "page": 1}]}
 
 
-def test_process_one_writes_both_outputs(tmp_path):
-    status = process_one(tmp_path / "cell-a.pdf", "Cell A", FakeClient(PAYLOAD), tmp_path / "out",
+def _log(out):
+    return json.loads((out / "run-log.json").read_text())
+
+
+def test_process_one_writes_all_outputs(tmp_path):
+    out = tmp_path / "out"
+    status = process_one(tmp_path / "cell-a.pdf", "Cell A", FakeClient(PAYLOAD), out,
                          extract_pages=lambda p: TEXT_PAGES)
     assert status == "ok"
-    data = json.loads((tmp_path / "out" / "cell-a.json").read_text())
+    data = json.loads((out / "cell-a.json").read_text())
     assert [f["id"] for f in data["fields"]] == [f.id for f in FIELDS]
     assert data["title"] == "Cell A" and data["pages"][0]["lines"][0] == "Nominal Capacity 3500 mAh"
-    base = json.loads((tmp_path / "out" / "baseline" / "cell-a.json").read_text())
-    assert base["run"]["method"] == "baseline"
+    assert json.loads((out / "baseline" / "cell-a.json").read_text())["run"]["method"] == "baseline"
+    assert (out / "raw" / "cell-a.checked.txt").exists() and (out / "raw" / "cell-a.baseline.txt").exists()
+    assert _log(out)[-1]["status"] == "ok"
 
 
 def test_process_one_skips_scanned_pdf(tmp_path):
-    status = process_one(tmp_path / "scan.pdf", "Scan", FakeClient(PAYLOAD), tmp_path / "out",
-                         extract_pages=lambda p: [Page(1, [])])
-    assert status == "skipped" and not (tmp_path / "out" / "scan.json").exists()
+    out = tmp_path / "out"
+    assert process_one(tmp_path / "scan.pdf", "Scan", FakeClient(PAYLOAD), out,
+                       extract_pages=lambda p: [Page(1, [])]) == "skipped"
+    assert not (out / "scan.json").exists() and _log(out)[-1]["status"] == "skipped"
 
 
 def test_process_one_marks_failed_on_refusal(tmp_path):
-    status = process_one(tmp_path / "x.pdf", "X", FakeClient(PAYLOAD, stop_reason="refusal"), tmp_path / "out",
-                         extract_pages=lambda p: TEXT_PAGES)
-    assert status == "failed" and not (tmp_path / "out" / "x.json").exists()
-```
+    out = tmp_path / "out"
+    assert process_one(tmp_path / "x.pdf", "X", FakeClient(PAYLOAD, stop_reason="refusal"), out,
+                       extract_pages=lambda p: TEXT_PAGES) == "failed"
+    assert not (out / "x.json").exists()
 
-Also create an empty `pipeline/tests/__init__.py` so `from tests.test_extract import FakeClient` resolves.
+
+def test_process_one_survives_corrupt_pdf(tmp_path):
+    def boom(_):
+        raise ValueError("bad xref table")
+    out = tmp_path / "out"
+    assert process_one(tmp_path / "bad.pdf", "Bad", FakeClient(PAYLOAD), out, extract_pages=boom) == "failed"
+    process_one(tmp_path / "good.pdf", "Good", FakeClient(PAYLOAD), out, extract_pages=lambda p: TEXT_PAGES)
+    assert [e["status"] for e in _log(out)] == ["failed", "ok"]
+
+
+def test_process_one_fails_on_served_model_mismatch(tmp_path):
+    client = FakeClient(PAYLOAD, served=["claude-opus-5-5", "claude-opus-4-8"])
+    out = tmp_path / "out"
+    assert process_one(tmp_path / "m.pdf", "M", client, out, extract_pages=lambda p: TEXT_PAGES) == "failed"
+    assert "served models differ" in _log(out)[-1]["detail"]
+
+
+def test_read_sources(tmp_path):
+    p = tmp_path / "sources.csv"
+    p.write_text("id,title,url,manufacturer,licence_note,split,notes\na,Cell A,http://x,LG,public,dev,\n")
+    assert read_sources(p)["a"]["split"] == "dev"
+```
 
 - [ ] **Step 2: Run the test to verify it fails**
 
 Run: `pytest tests/test_run.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'vigil_pipeline.run'`
 
-- [ ] **Step 3: Implement `run.py` and the sources file**
+- [ ] **Step 3: Implement `sources.py`, `run.py` and the sources file**
 
 `pipeline/datasheets/sources.csv`. Header only for now; Task 7 fills it in:
 ```csv
-id,title,url,manufacturer,notes
+id,title,url,manufacturer,licence_note,split,notes
+```
+
+`pipeline/vigil_pipeline/sources.py`:
+```python
+"""datasheets/sources.csv: id,title,url,manufacturer,licence_note,split(dev|test),notes"""
+import csv
+
+
+def read_sources(path) -> dict[str, dict]:
+    with open(path, newline="") as fh:
+        return {row["id"]: row for row in csv.DictReader(fh)}
 ```
 
 `pipeline/vigil_pipeline/run.py`:
 ```python
-"""python -m vigil_pipeline.run [--only ID ...]  - process datasheets/*.pdf into out/."""
+"""python -m vigil_pipeline.run [--only ID ...] [--split dev|test]  - process datasheets/*.pdf into out/."""
 import argparse
-import csv
 import json
+from dataclasses import asdict
 from pathlib import Path
 
 import anthropic
 
 from .check import check_all
 from .contract import DatasheetResult
-from .extract import ExtractionError, extract_baseline, extract_checked
+from .extract import extract_baseline, extract_checked
 from .ingest import has_text, pages_to_dicts, pdf_to_pages
+from .sources import read_sources
 
 ROOT = Path(__file__).resolve().parent.parent
 DATASHEETS = ROOT / "datasheets"
 OUT = ROOT / "out"
-_LOG: list[dict] = []
 
 
-def _log(id_: str, status: str, detail: str = "") -> str:
-    _LOG.append({"id": id_, "status": status, "detail": detail})
+def _log(out_dir: Path, id_: str, status: str, detail: str = "") -> str:
+    """Append to out/run-log.json immediately, so a crash or a later --only run never loses history."""
+    path = out_dir / "run-log.json"
+    entries = json.loads(path.read_text()) if path.exists() else []
+    entries.append({"id": id_, "status": status, "detail": detail})
+    out_dir.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(entries, indent=2))
     print(f"{status:8} {id_} {detail}")
     return status
 
 
-def process_one(pdf_path: Path, title: str, client, out_dir: Path, extract_pages=pdf_to_pages) -> str:
-    id_ = Path(pdf_path).stem
-    pages = extract_pages(pdf_path)
-    if not has_text(pages):
-        return _log(id_, "skipped", "no text layer (scanned PDF?)")
+def process_one(pdf_path, title: str, client, out_dir, extract_pages=pdf_to_pages) -> str:
+    id_, out_dir = Path(pdf_path).stem, Path(out_dir)
     try:
-        raw, run = extract_checked(client, pages)
-        base_raw, base_run = extract_baseline(client, pages)
-    except (anthropic.APIError, ExtractionError) as exc:
-        return _log(id_, "failed", f"{type(exc).__name__}: {exc}")
+        pages = extract_pages(pdf_path)
+    except Exception as exc:  # corrupt or encrypted PDF: log it and carry on with the next sheet
+        return _log(out_dir, id_, "failed", f"unreadable PDF: {type(exc).__name__}: {exc}")
+    if not has_text(pages):
+        return _log(out_dir, id_, "skipped", "no text layer (scanned PDF?)")
+    try:
+        raw, run, raw_text = extract_checked(client, pages)
+        base_raw, base_run, base_text = extract_baseline(client, pages)
+    except Exception as exc:  # API errors, refusals, malformed JSON: one bad sheet never stops the run
+        return _log(out_dir, id_, "failed", f"{type(exc).__name__}: {exc}")
+    (out_dir / "raw").mkdir(parents=True, exist_ok=True)
+    (out_dir / "raw" / f"{id_}.checked.txt").write_text(raw_text)
+    (out_dir / "raw" / f"{id_}.baseline.txt").write_text(base_text)
+    if run.served_model != base_run.served_model:
+        return _log(out_dir, id_, "failed",
+                    f"served models differ: {run.served_model} vs {base_run.served_model}")
     result = DatasheetResult(id=id_, title=title, source_file=Path(pdf_path).name,
                              pages=pages_to_dicts(pages), fields=check_all(raw, pages), run=run)
     (out_dir / "baseline").mkdir(parents=True, exist_ok=True)
     (out_dir / f"{id_}.json").write_text(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
     baseline = {"id": id_, "fields": [{"id": r.id, "found": r.found, "value": r.value, "unit": r.unit}
-                                      for r in base_raw.values()], "run": base_run.__dict__}
+                                      for r in base_raw.values()], "run": asdict(base_run)}
     (out_dir / "baseline" / f"{id_}.json").write_text(json.dumps(baseline, ensure_ascii=False, indent=2))
-    return _log(id_, "ok", f"${run.cost_usd + base_run.cost_usd:.3f}")
-
-
-def _titles() -> dict[str, str]:
-    with open(DATASHEETS / "sources.csv", newline="") as fh:
-        return {row["id"]: row["title"] for row in csv.DictReader(fh)}
+    return _log(out_dir, id_, "ok", f"${run.cost_usd + base_run.cost_usd:.3f}")
 
 
 def main(argv=None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--only", nargs="*", help="datasheet ids (file stems) to process")
+    parser.add_argument("--split", choices=["dev", "test"], help="only process this split")
     args = parser.parse_args(argv)
-    titles = _titles()
+    sources = read_sources(DATASHEETS / "sources.csv")
     client = anthropic.Anthropic(max_retries=4)
-    pdfs = sorted(DATASHEETS.glob("*.pdf"))
-    if args.only:
-        pdfs = [p for p in pdfs if p.stem in set(args.only)]
-    for pdf in pdfs:
-        if pdf.stem not in titles:
-            _log(pdf.stem, "failed", "missing from sources.csv")
+    for pdf in sorted(DATASHEETS.glob("*.pdf")):
+        if args.only and pdf.stem not in set(args.only):
             continue
-        process_one(pdf, titles[pdf.stem], client, OUT)
-    OUT.mkdir(exist_ok=True)
-    (OUT / "run-log.json").write_text(json.dumps(_LOG, indent=2))
+        row = sources.get(pdf.stem)
+        if row is None:
+            _log(OUT, pdf.stem, "failed", "missing from sources.csv")
+            continue
+        if args.split and row["split"] != args.split:
+            continue
+        process_one(pdf, row["title"], client, OUT)
 
 
 if __name__ == "__main__":
@@ -1194,25 +1305,28 @@ Expected: all pass
 - [ ] **Step 5: Commit**
 
 ```bash
-git add pipeline/vigil_pipeline/run.py pipeline/datasheets/sources.csv pipeline/tests/
-git commit -m "feat(pipeline): run command writing checked and baseline outputs"
+git add pipeline/vigil_pipeline/sources.py pipeline/vigil_pipeline/run.py pipeline/datasheets/sources.csv pipeline/tests/test_run.py
+git commit -m "feat(pipeline): run command with per-sheet error isolation and raw responses"
 ```
 
 ---
 
-### Task 7: Datasheets and labelling tools (Richard does the hands-on part)
+### Task 7: Datasheets, dev tuning freeze, and labelling (Richard does the hands-on part)
 
 **Files:**
 - Create: `pipeline/vigil_pipeline/labels.py`
+- Create: `pipeline/labels/GUIDE.md`
 - Modify: `pipeline/datasheets/sources.csv` (about 30 rows)
 - Create: `pipeline/labels/labels.csv` (generated, then checked by hand)
 - Test: `pipeline/tests/test_labels.py`
 
 **Interfaces:**
-- Consumes: `SOURCE_FIELDS` (Task 1), and the `out/<id>.json` files (Task 6)
+- Consumes: `SOURCE_FIELDS` (Task 1), `read_sources` (Task 6), the `out/<id>.json` files (Task 6)
 - Produces:
-  - `write_template(datasheet_ids, out_dir, dest) -> int`, which returns the number of rows written
-  - The CSV columns `datasheet_id,field_id,value,unit,checked`. Empty `value` means the field is absent from the document.
+  - `output_ids(out_dir) -> list[str]`, the sorted stems of `out/*.json` excluding `eval`, `run-log` and `schema`
+  - `pick_blind(test_ids, k=8, seed=2026) -> list[str]`
+  - `write_template(datasheet_ids, out_dir, dest, blind_ids=()) -> int`
+  - The CSV columns `datasheet_id,field_id,value,unit,prefill_value,prefill_unit,blind,checked`
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1221,24 +1335,43 @@ git commit -m "feat(pipeline): run command writing checked and baseline outputs"
 import csv
 import json
 
-from vigil_pipeline.labels import write_template
+from vigil_pipeline.labels import output_ids, pick_blind, write_template
 from vigil_pipeline.schema import SOURCE_FIELDS
 
 
-def test_template_prefills_from_output_and_leaves_checked_blank(tmp_path):
+def _out(tmp_path):
     out = tmp_path / "out"
     out.mkdir()
-    (out / "a.json").write_text(json.dumps({"fields": [
-        {"id": "weight", "raw_value": "49.0", "raw_unit": "g", "status": "verified-source"},
-        {"id": "manufacturer", "raw_value": None, "raw_unit": None, "status": "review"},
-    ]}))
+    for name in ("a", "b"):
+        (out / f"{name}.json").write_text(json.dumps({"fields": [
+            {"id": "weight", "raw_value": "49.0", "raw_unit": "g", "status": "verified-source"},
+            {"id": "manufacturer", "raw_value": None, "raw_unit": None, "status": "review"},
+        ]}))
+    for extra in ("eval", "run-log", "schema"):
+        (out / f"{extra}.json").write_text("{}")
+    return out
+
+
+def test_output_ids_ignores_non_sheet_files(tmp_path):
+    assert output_ids(_out(tmp_path)) == ["a", "b"]
+
+
+def test_template_prefills_and_blinds(tmp_path):
+    out = _out(tmp_path)
     dest = tmp_path / "labels.csv"
-    n = write_template(["a", "b"], out, dest)
+    n = write_template(["a", "b"], out, dest, blind_ids=["b"])
     rows = list(csv.DictReader(dest.open()))
     assert n == len(rows) == 2 * len(SOURCE_FIELDS)
-    weight = next(r for r in rows if r["datasheet_id"] == "a" and r["field_id"] == "weight")
-    assert (weight["value"], weight["unit"], weight["checked"]) == ("49.0", "g", "")
-    assert all(r["checked"] == "" for r in rows)
+    a_w = next(r for r in rows if r["datasheet_id"] == "a" and r["field_id"] == "weight")
+    b_w = next(r for r in rows if r["datasheet_id"] == "b" and r["field_id"] == "weight")
+    assert (a_w["value"], a_w["prefill_value"], a_w["blind"], a_w["checked"]) == ("49.0", "49.0", "", "")
+    assert (b_w["value"], b_w["prefill_value"], b_w["blind"]) == ("", "", "y")
+
+
+def test_pick_blind_is_deterministic_and_bounded():
+    ids = [f"s{i}" for i in range(25)]
+    assert pick_blind(ids) == pick_blind(list(reversed(ids)))
+    assert len(pick_blind(ids)) == 8 and len(pick_blind(ids[:3])) == 3
 ```
 
 - [ ] **Step 2: Run the test to verify it fails**
@@ -1246,48 +1379,85 @@ def test_template_prefills_from_output_and_leaves_checked_blank(tmp_path):
 Run: `pytest tests/test_labels.py -v`
 Expected: FAIL with `ModuleNotFoundError`
 
-- [ ] **Step 3: Implement `labels.py`**
+- [ ] **Step 3: Implement `labels.py` and write the labelling guide**
 
 `pipeline/vigil_pipeline/labels.py`:
 ```python
 """python -m vigil_pipeline.labels  - write labels/labels.csv as a DRAFT for Richard to check.
 
-The draft is pre-filled from the extraction output. Every row stays checked='' until Richard has
-compared it with the PDF and typed 'y'; evaluate.py refuses unchecked rows (spec §5.3)."""
+Non-blind sheets are pre-filled from the extraction output (prefill_* columns keep the original so
+the edit rate can be reported). About 8 test sheets are 'blind': no prefill at all, labelled from the
+PDF only, so the headline can be reported on labels the model never influenced (spec §5.3)."""
 import csv
 import json
+import random
 from pathlib import Path
 
 from .schema import SOURCE_FIELDS
+from .sources import read_sources
 
 ROOT = Path(__file__).resolve().parent.parent
+COLUMNS = ["datasheet_id", "field_id", "value", "unit", "prefill_value", "prefill_unit", "blind", "checked"]
+_NOT_SHEETS = {"eval", "run-log", "schema"}
 
 
-def write_template(datasheet_ids: list[str], out_dir: Path, dest: Path) -> int:
+def output_ids(out_dir) -> list[str]:
+    return sorted(p.stem for p in Path(out_dir).glob("*.json") if p.stem not in _NOT_SHEETS)
+
+
+def pick_blind(test_ids, k: int = 8, seed: int = 2026) -> list[str]:
+    ids = sorted(test_ids)
+    return sorted(random.Random(seed).sample(ids, min(k, len(ids))))
+
+
+def write_template(datasheet_ids, out_dir, dest, blind_ids=()) -> int:
     rows = []
     for ds in datasheet_ids:
-        path = Path(out_dir) / f"{ds}.json"
+        blind = ds in set(blind_ids)
         prefill = {}
-        if path.exists():
+        path = Path(out_dir) / f"{ds}.json"
+        if not blind and path.exists():
             prefill = {f["id"]: f for f in json.loads(path.read_text())["fields"]}
         for field in SOURCE_FIELDS:
             p = prefill.get(field.id, {})
-            rows.append({"datasheet_id": ds, "field_id": field.id, "value": p.get("raw_value") or "",
-                         "unit": p.get("raw_unit") or "", "checked": ""})
-    dest.parent.mkdir(parents=True, exist_ok=True)
+            value, unit = p.get("raw_value") or "", p.get("raw_unit") or ""
+            rows.append({"datasheet_id": ds, "field_id": field.id, "value": value, "unit": unit,
+                         "prefill_value": value, "prefill_unit": unit,
+                         "blind": "y" if blind else "", "checked": ""})
+    Path(dest).parent.mkdir(parents=True, exist_ok=True)
     with open(dest, "w", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=["datasheet_id", "field_id", "value", "unit", "checked"])
+        writer = csv.DictWriter(fh, fieldnames=COLUMNS)
         writer.writeheader()
         writer.writerows(rows)
     return len(rows)
 
 
 if __name__ == "__main__":
-    ids = [p.stem for p in sorted((ROOT / "datasheets").glob("*.pdf"))]
     dest = ROOT / "labels" / "labels.csv"
     if dest.exists():
         raise SystemExit(f"{dest} exists - refusing to overwrite checked labels")
-    print(write_template(ids, ROOT / "out", dest), "rows written to", dest)
+    ids = output_ids(ROOT / "out")
+    sources = read_sources(ROOT / "datasheets" / "sources.csv")
+    blind = pick_blind([i for i in ids if sources.get(i, {}).get("split") == "test"])
+    print(write_template(ids, ROOT / "out", dest, blind), "rows written to", dest, "- blind:", blind)
+```
+
+`pipeline/labels/GUIDE.md`:
+```markdown
+# Labelling guide (read before labelling; keep decisions consistent)
+
+- **One row per field per sheet.** Compare with the PDF only. The prefill is a suggestion, not evidence.
+- **Absent:** if the datasheet does not state the field, leave `value` and `unit` empty. Don't infer it,
+  don't calculate it, don't use outside knowledge.
+- **Variants:** if the sheet lists several models, label the main/first one (the same rule the model gets).
+- **Capacity:** use nominal or typical capacity, not minimum.
+- **Internal resistance:** label whatever the sheet gives (AC or DC), as written.
+- **Temperatures:** the discharge range, not storage or charge.
+- **Units:** copy the unit as written (mAh stays mAh). The eval converts.
+- **Free-text fields** (hazardous substances, extinguishing agent, dismantling, UN 38.3, EU declaration):
+  copy the key phrase, e.g. "dry chemical, CO2", not the whole paragraph.
+- **Blind sheets (`blind=y`):** these have no prefill on purpose. Label them first, from the PDF.
+- When a row is done, type `y` in `checked`. The eval refuses any row without it.
 ```
 
 - [ ] **Step 4: Run the test to verify it passes**
@@ -1297,34 +1467,54 @@ Expected: PASS
 
 - [ ] **Step 5: Collect about 30 datasheets (Claude can do this; Richard skims the list)**
 
-Download public PDF datasheets into `pipeline/datasheets/`, named `<manufacturer>-<model>.pdf` in lowercase with hyphens. Add one `sources.csv` row per PDF with its exact download URL. The mix:
-- About 20 cylindrical cells (18650/21700) from at least 5 manufacturers, e.g. LG, Samsung SDI, Molicel, Panasonic, Sony/Murata, EVE.
+Download public PDF datasheets into `pipeline/datasheets/`, named `<manufacturer>-<model>.pdf` in lowercase with hyphens. Add one `sources.csv` row per PDF with:
+- the exact download URL
+- a `licence_note` (e.g. "public manufacturer datasheet, reproduced as extracted text for a non-commercial demo")
+- a `split`: mark about 5 of them `dev`, spread across manufacturers, and the rest `test`
+
+The mix:
+- About 20 cylindrical cells (18650/21700) from at least 5 manufacturers.
 - About 5 LFP cells or prismatic cells.
 - About 5 e-bike, LMT or home-storage packs.
 
-Skip any PDF that `has_text` rejects, and record it in `notes`.
+If `has_text` rejects a PDF, delete it and record it in `notes`, so that later steps never see it.
 
-- [ ] **Step 6: Run the pipeline on all of them (costs about $2–4)**
+- [ ] **Step 6: Tune on dev only, then freeze**
 
-Run: `python -m vigil_pipeline.run`
-Expected: one line per PDF and `out/run-log.json`. Fix any `failed` lines before going on.
+Run: `python -m vigil_pipeline.run --split dev`
 
-- [ ] **Step 7: Generate the draft labels, then Richard checks every row against the PDFs**
+Inspect `out/<dev ids>.json` by eye. Adjust prompts, hints or ranges if something is systematically wrong, and repeat until stable. Then **freeze**:
+```bash
+git add -A && git commit -m "chore(pipeline): freeze prompts, ranges and checker before test run"
+```
+From here on, don't change `extract.py`, `schema.py`, `check.py` or `quotes.py` before the eval is reported. If you must, rerun everything and say so in the write-up.
+
+- [ ] **Step 7: Run the test split (costs about $2–4)**
+
+Run: `python -m vigil_pipeline.run --split test`
+Expected: an `ok` line per sheet. Rerun any `failed` sheet with `--only <id>`.
+
+- [ ] **Step 8: Generate the draft labels, then Richard labels every row**
 
 Run: `python -m vigil_pipeline.labels`
 
-**Richard** opens `labels/labels.csv` in a spreadsheet. For each row, compare with the PDF, then correct `value`/`unit` (or clear `value` if the field really isn't in the document) and type `y` in `checked`. This takes about 2–3 hours, and the eval is only honest because of it.
+**Richard**, following `labels/GUIDE.md`:
+1. Label the blind sheets first, from the PDF only.
+2. Then check every prefilled row against its PDF, correcting `value` and `unit` where needed (clear `value` if the field is absent).
+3. Type `y` in `checked` on every row.
 
-- [ ] **Step 8: Commit**
+It takes about 3 hours, and the eval is only honest because of it.
+
+- [ ] **Step 9: Commit**
 
 ```bash
-git add pipeline/vigil_pipeline/labels.py pipeline/tests/test_labels.py pipeline/datasheets pipeline/labels
-git commit -m "feat(pipeline): datasheet set and checked labels"
+git add pipeline/vigil_pipeline/labels.py pipeline/tests/test_labels.py pipeline/labels pipeline/datasheets
+git commit -m "feat(pipeline): datasheet set, labelling guide and checked labels"
 ```
 
 ---
 
-### Task 8: Evaluation
+### Task 8: Evaluation (three arms, honest metrics)
 
 **Files:**
 - Create: `pipeline/vigil_pipeline/evaluate.py`
@@ -1332,14 +1522,31 @@ git commit -m "feat(pipeline): datasheet set and checked labels"
 
 **Interfaces:**
 - Consumes:
-  - `FIELD_BY_ID`, `SOURCE_FIELDS` (Task 1)
+  - `FIELD_BY_ID`, `FIELDS`, `SOURCE_FIELDS` (Task 1)
   - `normalise_unit`, `parse_number` (Task 2)
   - `norm` (Task 3)
-  - The `out/` files (Task 6) and `labels/labels.csv` (Task 7)
+  - `read_sources` (Task 6)
+  - `output_ids` (Task 7)
 - Produces:
-  - `load_labels(path) -> dict[str, dict[str, tuple[str, str]]]`
-  - `evaluate(out_dir, labels) -> dict`
-  - `python -m vigil_pipeline.evaluate`, which writes `out/eval.json` with the keys `datasheets`, `fields_per_sheet`, `baseline`, `checked`, `not_found`, `per_cluster`, `cost`, `missed_errors`
+  - `Label` (`value, unit, prefill_value, blind`)
+  - `load_labels(path) -> dict[str, dict[str, Label]]`
+  - `matches(field, predicted, truth) -> bool`
+  - `outcome(field, predicted, truth) -> "correct" | "wrong_value" | "omission" | "hallucination"`
+  - `evaluate(out_dir, labels, splits, iters=2000) -> dict`
+  - `python -m vigil_pipeline.evaluate`, which writes `out/eval.json`
+
+**Metric definitions** (these go in the case study verbatim):
+- **Baseline (A) and quote prompt (B):** accuracy, recall on present fields, hallucination rate on absent fields, and counts of each outcome.
+- **Checked (C):**
+  - `accepted_precision`: the share of `verified-source` fields that are correct.
+  - `coverage`: the share of fields auto-accepted.
+  - `review_burden`: the share of fields a human must look at.
+  - `produced_wrong`: wrong values plus hallucinations from B.
+  - `caught`: how many of `produced_wrong` were flagged `review`.
+  - `caught_rate = caught / produced_wrong`. **Omissions are excluded from this rate and reported separately.**
+  - `false_alarms`: correct values that were flagged anyway.
+- **Confidence intervals:** a 95% bootstrap, resampling whole sheets.
+- **Headline:** `test` split only, plus a `blind_subset` block. There are no per-cluster percentages, because the samples are too small.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1349,78 +1556,133 @@ import json
 
 import pytest
 
-from vigil_pipeline.evaluate import evaluate, load_labels
-from vigil_pipeline.schema import SOURCE_FIELDS
+from vigil_pipeline.evaluate import evaluate, load_labels, matches
+from vigil_pipeline.schema import FIELD_BY_ID, SOURCE_FIELDS
+
+HEADER = "datasheet_id,field_id,value,unit,prefill_value,prefill_unit,blind,checked"
 
 
-def write_labels(path, rows):
-    lines = ["datasheet_id,field_id,value,unit,checked"] + [",".join(r) for r in rows]
+def write_labels(path, ds_rows):
+    lines = [HEADER]
+    for ds, overrides, blind in ds_rows:
+        for f in SOURCE_FIELDS:
+            value, unit, prefill = overrides.get(f.id, ("", "", ""))
+            lines.append(f"{ds},{f.id},{value},{unit},{prefill},{unit if prefill else ''},{'y' if blind else ''},y")
     path.write_text("\n".join(lines) + "\n")
 
 
-def full_rows(ds, overrides):
-    rows = []
+def write_sheet(out, ds, checked_over, baseline_items, served="claude-opus-5-5"):
+    (out / "baseline").mkdir(parents=True, exist_ok=True)
+    fields = []
     for f in SOURCE_FIELDS:
-        value, unit = overrides.get(f.id, ("", ""))
-        rows.append((ds, f.id, value, unit, "y"))
-    return rows
+        status, value, quote = checked_over.get(f.id, ("review", None, None))
+        fields.append({"id": f.id, "status": status, "value": value, "quote": quote})
+    run = {"cost_usd": 0.05, "elapsed_s": 4.0, "served_model": served}
+    (out / f"{ds}.json").write_text(json.dumps({"id": ds, "fields": fields, "run": run}))
+    (out / "baseline" / f"{ds}.json").write_text(json.dumps(
+        {"id": ds, "fields": baseline_items, "run": {**run, "cost_usd": 0.02, "elapsed_s": 2.0}}))
+
+
+LABELS_A = {"rated_capacity": ("3500", "mAh", "3500"), "nominal_voltage": ("3.635", "V", "3.7"),
+            "weight": ("49.0", "g", "50"), "model_identifier": ("MJ1", "", "")}
+CHECKED_A = {
+    "rated_capacity": ("verified-source", 3.5, "Nominal Capacity 3500 mAh"),   # correct, accepted
+    "nominal_voltage": ("review", 3.7, "Nominal Voltage 3.7 V"),               # wrong value, caught
+    "weight": ("verified-source", 50.0, "Weight 50 g"),                        # wrong value, missed
+    "manufacturer": ("verified-source", "Made Up Corp", "Made Up Corp"),       # hallucination, missed
+}                                                                              # model_identifier: omission
+BASELINE_A = [
+    {"id": "model_identifier", "found": True, "value": "MJ1", "unit": ""},
+    {"id": "manufacturer", "found": True, "value": "LG", "unit": ""},
+    {"id": "rated_capacity", "found": True, "value": "3500", "unit": "mAh"},
+    {"id": "nominal_voltage", "found": True, "value": "3.635", "unit": "V"},
+]
+
+
+def _setup(tmp_path, blind=False):
+    out = tmp_path / "out"
+    write_sheet(out, "a", CHECKED_A, BASELINE_A)
+    labels = tmp_path / "labels.csv"
+    write_labels(labels, [("a", LABELS_A, blind)])
+    return out, labels
+
+
+def test_three_arms_and_caught_rate_excludes_omissions(tmp_path):
+    out, labels = _setup(tmp_path)
+    r = evaluate(out, load_labels(labels), {"a": "test"}, iters=200)
+    c = r["checked"]
+    assert (c["produced_wrong"], c["caught"], c["omissions"], c["false_alarms"]) == (3, 1, 1, 0)
+    assert c["caught_rate"] == pytest.approx(1 / 3, abs=1e-4)
+    assert c["accepted"] == 3 and c["accepted_precision"] == pytest.approx(1 / 3, abs=1e-4)
+    assert c["review_burden"] == pytest.approx(17 / 20)
+    b = r["quote_prompt"]
+    assert (b["correct"], b["wrong_value"], b["omission"], b["hallucination"]) == (16, 2, 1, 1)
+    a = r["baseline"]
+    assert (a["correct"], a["omission"], a["hallucination"]) == (18, 1, 1)
+    assert a["recall_present"] == 0.75 and a["hallucination_rate_absent"] == 0.0625
+    assert [m["field"] for m in r["missed_errors"]] == ["manufacturer", "weight"]
+    assert r["ci95"]["accepted_precision"] == [0.3333, 0.3333]
+    assert r["labels"]["edit_rate_vs_prefill"] == pytest.approx(2 / 3, abs=1e-4)
+    assert r["blind_subset"] is None and r["served_models"] == ["claude-opus-5-5"]
+    assert r["cost"]["baseline_s_per_sheet"] == 2.0 and r["cost"]["checked_usd_per_sheet"] == 0.05
+
+
+def test_blind_subset_reported(tmp_path):
+    out, labels = _setup(tmp_path, blind=True)
+    r = evaluate(out, load_labels(labels), {"a": "test"}, iters=50)
+    assert r["blind_subset"]["datasheets"] == 1
+
+
+def test_matching_rules():
+    assert not matches(FIELD_BY_ID["model_identifier"], "INR18650", "INR18650 MJ1")
+    assert matches(FIELD_BY_ID["model_identifier"], "inr18650 mj1", "INR18650 MJ1")
+    assert matches(FIELD_BY_ID["extinguishing_agent"], "Use dry chemical or CO2 extinguisher", "dry chemical, CO2")
+    assert not matches(FIELD_BY_ID["nominal_voltage"], 3.6, 3.635)
+    assert matches(FIELD_BY_ID["nominal_voltage"], 3.636, 3.635)
 
 
 def test_load_labels_rejects_unknown_field(tmp_path):
-    p = tmp_path / "labels.csv"
-    write_labels(p, [("a", "wieght", "49", "g", "y")])
+    p = tmp_path / "l.csv"
+    p.write_text(HEADER + "\na,wieght,49,g,,,,y\n")
     with pytest.raises(ValueError, match="unknown field id 'wieght'"):
         load_labels(p)
 
 
-def test_load_labels_rejects_unchecked(tmp_path):
-    p = tmp_path / "labels.csv"
-    write_labels(p, [("a", "weight", "49", "g", "")])
+def test_load_labels_rejects_unchecked_and_duplicates(tmp_path):
+    p = tmp_path / "l.csv"
+    p.write_text(HEADER + "\na,weight,49,g,,,,\n")
     with pytest.raises(ValueError, match="not checked"):
+        load_labels(p)
+    p.write_text(HEADER + "\na,weight,49,g,,,,y\na,weight,50,g,,,,y\n")
+    with pytest.raises(ValueError, match="duplicate"):
         load_labels(p)
 
 
-def _field(id, status, value, unit=None, quote=None):
-    return {"id": id, "cluster": "performance" if id != "manufacturer" else "general",
-            "status": status, "value": value, "unit": unit, "quote": quote}
+def test_evaluate_refuses_unlabelled_output(tmp_path):
+    out, labels = _setup(tmp_path)
+    write_sheet(out, "b", {}, [])
+    with pytest.raises(ValueError, match="outputs without labels: \\['b'\\]"):
+        evaluate(out, load_labels(labels), {}, iters=10)
 
 
-def test_evaluate_counts_caught_and_missed(tmp_path):
+def test_evaluate_refuses_incomplete_or_unitless_labels(tmp_path):
     out = tmp_path / "out"
-    (out / "baseline").mkdir(parents=True)
-    checked_fields = [_field(f.id, "review", None) for f in SOURCE_FIELDS]
-    by = {f["id"]: f for f in checked_fields}
-    by["rated_capacity"].update(status="verified-source", value=3.5, unit="Ah")   # correct
-    by["nominal_voltage"].update(status="review", value=3.7, unit="V")            # wrong, caught
-    by["weight"].update(status="verified-source", value=50.0, unit="g")           # wrong, missed
-    (out / "a.json").write_text(json.dumps({"id": "a", "fields": checked_fields,
-        "run": {"cost_usd": 0.05, "elapsed_s": 4.0}}))
-    (out / "baseline" / "a.json").write_text(json.dumps({"id": "a", "fields": [
-        {"id": "rated_capacity", "found": True, "value": "3500", "unit": "mAh"},
-        {"id": "nominal_voltage", "found": True, "value": "3.7", "unit": "V"},
-        {"id": "manufacturer", "found": True, "value": "Made Up Corp", "unit": ""},
-    ], "run": {"cost_usd": 0.02, "elapsed_s": 2.0}}))
-    labels_path = tmp_path / "labels.csv"
-    write_labels(labels_path, full_rows("a", {"rated_capacity": ("3500", "mAh"),
-                                              "nominal_voltage": ("3.635", "V"), "weight": ("49.0", "g")}))
-    result = evaluate(out, load_labels(labels_path))
-    n = len(SOURCE_FIELDS)
-    assert result["checked"]["wrong"] == 2 and result["checked"]["wrong_flagged"] == 1
-    assert result["checked"]["errors_caught_rate"] == 0.5
-    assert result["checked"]["accuracy"] == pytest.approx((n - 2) / n)
-    # baseline: capacity right; voltage wrong; manufacturer invented (label absent); weight missed (label 49 g)
-    assert result["baseline"]["accuracy"] == pytest.approx((n - 3) / n)
-    assert result["not_found"]["baseline_correct"] == result["not_found"]["label_absent"] - 1
-    assert result["missed_errors"][0]["field"] == "weight"
-    assert result["cost"]["checked_usd_per_sheet"] == 0.05
+    write_sheet(out, "a", {}, [])
+    p = tmp_path / "l.csv"
+    p.write_text(HEADER + "\na,weight,49,g,,,,y\n")
+    with pytest.raises(ValueError, match="missing fields"):
+        evaluate(out, load_labels(p), {}, iters=10)
+    write_labels(p, [("a", {"weight": ("49", "", "")}, False)])
+    with pytest.raises(ValueError, match="not a number in a unit convertible"):
+        evaluate(out, load_labels(p), {}, iters=10)
 
 
-def test_evaluate_refuses_missing_output(tmp_path):
-    (tmp_path / "out" / "baseline").mkdir(parents=True)
-    labels_path = tmp_path / "labels.csv"
-    write_labels(labels_path, full_rows("ghost", {}))
+def test_evaluate_refuses_labels_without_output(tmp_path):
+    (tmp_path / "out").mkdir()
+    p = tmp_path / "l.csv"
+    write_labels(p, [("ghost", {}, False)])
     with pytest.raises(FileNotFoundError, match="ghost"):
-        evaluate(tmp_path / "out", load_labels(labels_path))
+        evaluate(tmp_path / "out", load_labels(p), {}, iters=10)
 ```
 
 - [ ] **Step 2: Run the test to verify it fails**
@@ -1432,114 +1694,238 @@ Expected: FAIL with `ModuleNotFoundError`
 
 `pipeline/vigil_pipeline/evaluate.py`:
 ```python
-"""python -m vigil_pipeline.evaluate  - score checked vs baseline against labels -> out/eval.json (spec §5.1 step 5)."""
+"""python -m vigil_pipeline.evaluate  - three-arm evaluation against checked labels -> out/eval.json.
+
+Arms: A = baseline prompt, B = quote prompt with checks ignored, C = quote prompt with checks.
+B vs C isolates the checks; A vs B isolates the prompt. Only the 20 'source' fields are scored."""
 import csv
 import json
 import math
+import random
+import re
 from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 
+from .labels import output_ids
 from .quotes import norm
-from .schema import FIELD_BY_ID, SOURCE_FIELDS
+from .schema import FIELD_BY_ID, FIELDS, SOURCE_FIELDS
+from .sources import read_sources
 from .units import normalise_unit, parse_number
 
 ROOT = Path(__file__).resolve().parent.parent
+NUM_TOL = 0.005
 
 
-def load_labels(path) -> dict[str, dict[str, tuple[str, str]]]:
-    labels: dict[str, dict[str, tuple[str, str]]] = defaultdict(dict)
+@dataclass
+class Label:
+    value: str
+    unit: str
+    prefill_value: str
+    blind: bool
+
+
+@dataclass
+class Rec:
+    ds: str
+    field: str
+    blind: bool
+    truth: object
+    base: object
+    quote_pred: object
+    status: str
+    quote: str | None
+
+
+def load_labels(path) -> dict[str, dict[str, Label]]:
+    labels: dict[str, dict[str, Label]] = defaultdict(dict)
     with open(path, newline="") as fh:
         for n, row in enumerate(csv.DictReader(fh), start=2):
-            if row["field_id"] not in FIELD_BY_ID:
-                raise ValueError(f"unknown field id '{row['field_id']}' in labels row {n}")
+            ds, fid = row["datasheet_id"], row["field_id"]
+            if fid not in FIELD_BY_ID:
+                raise ValueError(f"unknown field id '{fid}' in labels row {n}")
             if row["checked"].strip().lower() != "y":
-                raise ValueError(f"labels row {n} ({row['datasheet_id']}/{row['field_id']}) not checked")
-            labels[row["datasheet_id"]][row["field_id"]] = (row["value"].strip(), row["unit"].strip())
+                raise ValueError(f"labels row {n} ({ds}/{fid}) not checked")
+            if fid in labels[ds]:
+                raise ValueError(f"duplicate label {ds}/{fid} in row {n}")
+            labels[ds][fid] = Label(row["value"].strip(), row["unit"].strip(),
+                                    (row.get("prefill_value") or "").strip(),
+                                    (row.get("blind") or "").strip().lower() == "y")
     return dict(labels)
 
 
-def _canonical(field, value, unit):
-    """Label or baseline value -> canonical (float in field unit | text | None)."""
-    if value in (None, ""):
+def _truth(field, label: Label, ds: str):
+    if label.value == "":
         return None
     if field.vtype == "text":
-        return str(value)
-    if isinstance(value, (int, float)):
-        return float(value)
-    number, conv = parse_number(str(value)), normalise_unit(unit or "")
+        return label.value
+    number, conv = parse_number(label.value), normalise_unit(label.unit)
     if number is None or conv is None or conv[0] != field.unit:
-        return None
+        raise ValueError(f"label {ds}/{field.id}: '{label.value} {label.unit}' is not a number "
+                         f"in a unit convertible to {field.unit}")
     return number * conv[1]
 
 
-def _match(field, predicted, truth) -> bool:
+def _baseline_value(field, item):
+    if not item or not item.get("found"):
+        return None
+    value = str(item.get("value", "")).strip()
+    if field.vtype == "text":
+        return value or None
+    number, conv = parse_number(value), normalise_unit(item.get("unit", ""))
+    if number is None or conv is None or conv[0] != field.unit:
+        return "unparseable"  # a value was produced but is unusable: scored as wrong, not as absent
+    return number * conv[1]
+
+
+def _tokens(s: str) -> set[str]:
+    return set(re.findall(r"[a-z0-9.]+", norm(s)))
+
+
+def matches(field, predicted, truth) -> bool:
     if predicted is None or truth is None:
         return predicted is None and truth is None
     if field.vtype == "number":
-        return math.isclose(float(predicted), float(truth), rel_tol=0.01)
-    a, b = norm(str(predicted)), norm(str(truth))
-    return a == b or (min(len(a), len(b)) >= 2 and (a in b or b in a))
+        return isinstance(predicted, (int, float)) and math.isclose(float(predicted), float(truth), rel_tol=NUM_TOL)
+    if field.match == "tokens":
+        t, p = _tokens(str(truth)), _tokens(str(predicted))
+        return bool(t) and len(t & p) / len(t) >= 0.6 and len(p) <= 3 * len(t) + 3
+    return norm(str(predicted)) == norm(str(truth))
 
 
-def evaluate(out_dir, labels) -> dict:
+def outcome(field, predicted, truth) -> str:
+    if matches(field, predicted, truth):
+        return "correct"
+    if predicted is None:
+        return "omission"
+    if truth is None:
+        return "hallucination"
+    return "wrong_value"
+
+
+def _ratio(a, b):
+    return round(a / b, 4) if b else None
+
+
+def _score(recs: list[Rec], attr: str) -> dict:
+    c = {"n": len(recs), "correct": 0, "wrong_value": 0, "omission": 0, "hallucination": 0}
+    present = absent = correct_present = 0
+    for r in recs:
+        o = outcome(FIELD_BY_ID[r.field], getattr(r, attr), r.truth)
+        c[o] += 1
+        if r.truth is None:
+            absent += 1
+        else:
+            present += 1
+            correct_present += o == "correct"
+    c.update(present=present, absent=absent, accuracy=_ratio(c["correct"], c["n"]),
+             recall_present=_ratio(correct_present, present),
+             hallucination_rate_absent=_ratio(c["hallucination"], absent))
+    return c
+
+
+def _checked(recs: list[Rec]) -> dict:
+    out = [outcome(FIELD_BY_ID[r.field], r.quote_pred, r.truth) for r in recs]
+    accepted = [i for i, r in enumerate(recs) if r.status == "verified-source"]
+    produced_wrong = [i for i, o in enumerate(out) if o in ("wrong_value", "hallucination")]
+    caught = sum(recs[i].status == "review" for i in produced_wrong)
+    return {
+        "accepted": len(accepted),
+        "accepted_precision": _ratio(sum(out[i] == "correct" for i in accepted), len(accepted)),
+        "coverage": _ratio(len(accepted), len(recs)),
+        "review_burden": _ratio(sum(r.status == "review" for r in recs), len(recs)),
+        "produced_wrong": len(produced_wrong),
+        "caught": caught,
+        "caught_rate": _ratio(caught, len(produced_wrong)),
+        "false_alarms": sum(1 for i, r in enumerate(recs)
+                            if r.status == "review" and r.quote_pred is not None and out[i] == "correct"),
+        "omissions": out.count("omission"),
+    }
+
+
+def bootstrap_ci(recs: list[Rec], metric, iters: int, seed: int = 0):
+    by_sheet: dict[str, list[Rec]] = defaultdict(list)
+    for r in recs:
+        by_sheet[r.ds].append(r)
+    sheets, rng, values = sorted(by_sheet), random.Random(seed), []
+    for _ in range(iters):
+        sample = [r for s in (rng.choice(sheets) for _ in sheets) for r in by_sheet[s]]
+        v = metric(sample)
+        if v is not None:
+            values.append(v)
+    if not values:
+        return None
+    values.sort()
+    return [round(values[int(0.025 * (len(values) - 1))], 4), round(values[int(0.975 * (len(values) - 1))], 4)]
+
+
+def evaluate(out_dir, labels: dict[str, dict[str, Label]], splits: dict[str, str], iters: int = 2000) -> dict:
     out_dir = Path(out_dir)
-    tally = {"baseline": [0, 0], "checked": [0, 0]}
-    cluster_tally = defaultdict(lambda: {"baseline": [0, 0], "checked": [0, 0]})
-    wrong = flagged = false_alarms = absent = nf_checked = nf_base = 0
-    costs = {"checked": [], "baseline": [], "checked_s": []}
-    missed = []
-    for ds, truth_row in sorted(labels.items()):
-        checked_path, base_path = out_dir / f"{ds}.json", out_dir / "baseline" / f"{ds}.json"
-        for p in (checked_path, base_path):
+    unlabelled = sorted(set(output_ids(out_dir)) - set(labels))
+    if unlabelled:
+        raise ValueError(f"outputs without labels: {unlabelled}")
+    recs: list[Rec] = []
+    costs: dict[str, list[float]] = defaultdict(list)
+    served: set[str] = set()
+    for ds in sorted(labels):
+        cp, bp = out_dir / f"{ds}.json", out_dir / "baseline" / f"{ds}.json"
+        for p in (cp, bp):
             if not p.exists():
                 raise FileNotFoundError(f"no pipeline output for '{ds}': {p}")
-        checked = {f["id"]: f for f in json.loads(checked_path.read_text())["fields"]}
-        base_doc = json.loads(base_path.read_text())
+        row = labels[ds]
+        missing = [f.id for f in SOURCE_FIELDS if f.id not in row]
+        if missing:
+            raise ValueError(f"labels for '{ds}' missing fields: {missing}")
+        checked_doc, base_doc = json.loads(cp.read_text()), json.loads(bp.read_text())
+        for doc, key in ((checked_doc, "checked"), (base_doc, "baseline")):
+            costs[f"{key}_usd"].append(doc["run"]["cost_usd"])
+            costs[f"{key}_s"].append(doc["run"]["elapsed_s"])
+            served.add(doc["run"].get("served_model") or doc["run"].get("model", "unknown"))
+        checked = {f["id"]: f for f in checked_doc["fields"]}
         base = {f["id"]: f for f in base_doc["fields"]}
-        run = json.loads(checked_path.read_text())["run"]
-        costs["checked"].append(run["cost_usd"]); costs["checked_s"].append(run["elapsed_s"])
-        costs["baseline"].append(base_doc["run"]["cost_usd"])
-        for field in SOURCE_FIELDS:
-            truth = _canonical(field, *truth_row.get(field.id, ("", "")))
-            c = checked.get(field.id, {})
-            c_pred = c.get("value") if c.get("status") not in ("supplier", "estimate") else None
-            b = base.get(field.id, {})
-            b_pred = _canonical(field, b.get("value"), b.get("unit")) if b.get("found") else None
-            c_ok, b_ok = _match(field, c_pred, truth), _match(field, b_pred, truth)
-            for name, ok in (("checked", c_ok), ("baseline", b_ok)):
-                tally[name][0] += ok; tally[name][1] += 1
-                cluster_tally[field.cluster][name][0] += ok; cluster_tally[field.cluster][name][1] += 1
-            if truth is None:
-                absent += 1; nf_checked += c_pred is None; nf_base += b_pred is None
-            if not c_ok:
-                wrong += 1
-                if c.get("status") == "review":
-                    flagged += 1
-                else:
-                    missed.append({"datasheet": ds, "field": field.id, "predicted": c_pred,
-                                   "label": truth, "quote": c.get("quote")})
-            elif c.get("status") == "review" and c_pred is not None:
-                false_alarms += 1
-    acc = lambda t: round(t[0] / t[1], 4) if t[1] else None
+        blind = any(label.blind for label in row.values())
+        for f in SOURCE_FIELDS:
+            c = checked.get(f.id, {})
+            recs.append(Rec(ds, f.id, blind, _truth(f, row[f.id], ds), _baseline_value(f, base.get(f.id)),
+                            c.get("value"), c.get("status", "review"), c.get("quote")))
+    has_test = any(splits.get(r.ds) == "test" for r in recs)
+    test = [r for r in recs if splits.get(r.ds) == "test"] if has_test else recs
+    blind_recs = [r for r in test if r.blind]
+    prefilled = [lab for row in labels.values() for lab in row.values() if not lab.blind and lab.prefill_value]
     mean = lambda xs: round(sum(xs) / len(xs), 4) if xs else None
     return {
-        "datasheets": len(labels),
-        "fields_per_sheet": len(SOURCE_FIELDS),
-        "baseline": {"accuracy": acc(tally["baseline"])},
-        "checked": {"accuracy": acc(tally["checked"]), "wrong": wrong, "wrong_flagged": flagged,
-                    "errors_caught_rate": round(flagged / wrong, 4) if wrong else None,
-                    "false_alarms": false_alarms},
-        "not_found": {"label_absent": absent, "checked_correct": nf_checked, "baseline_correct": nf_base},
-        "per_cluster": {k: {m: acc(v[m]) for m in v} for k, v in sorted(cluster_tally.items())},
-        "cost": {"checked_usd_per_sheet": mean(costs["checked"]),
-                 "baseline_usd_per_sheet": mean(costs["baseline"]),
-                 "checked_s_per_sheet": mean(costs["checked_s"])},
-        "missed_errors": missed,
+        "split": "test" if has_test else "all",
+        "datasheets": len({r.ds for r in test}),
+        "fields_scored_per_sheet": len(SOURCE_FIELDS),
+        "unscored_fields": [f.id for f in FIELDS if f.kind != "source"],
+        "baseline": _score(test, "base"),
+        "quote_prompt": _score(test, "quote_pred"),
+        "checked": _checked(test),
+        "ci95": {
+            "baseline_accuracy": bootstrap_ci(test, lambda rs: _score(rs, "base")["accuracy"], iters),
+            "accepted_precision": bootstrap_ci(test, lambda rs: _checked(rs)["accepted_precision"], iters),
+            "caught_rate": bootstrap_ci(test, lambda rs: _checked(rs)["caught_rate"], iters),
+        },
+        "blind_subset": None if not blind_recs else {
+            "datasheets": len({r.ds for r in blind_recs}),
+            "baseline": _score(blind_recs, "base"),
+            "checked": _checked(blind_recs),
+        },
+        "labels": {"edit_rate_vs_prefill": _ratio(sum(lab.value != lab.prefill_value for lab in prefilled), len(prefilled)),
+                   "blind_sheets": len({r.ds for r in recs if r.blind})},
+        "cost": {f"{k}_per_sheet": mean(v) for k, v in sorted(costs.items())},
+        "served_models": sorted(served),
+        "missed_errors": [{"datasheet": r.ds, "field": r.field, "predicted": r.quote_pred,
+                           "label": r.truth, "quote": r.quote}
+                          for r in test
+                          if outcome(FIELD_BY_ID[r.field], r.quote_pred, r.truth) in ("wrong_value", "hallucination")
+                          and r.status != "review"],
     }
 
 
 if __name__ == "__main__":
-    result = evaluate(ROOT / "out", load_labels(ROOT / "labels" / "labels.csv"))
+    splits = {i: row["split"] for i, row in read_sources(ROOT / "datasheets" / "sources.csv").items()}
+    result = evaluate(ROOT / "out", load_labels(ROOT / "labels" / "labels.csv"), splits)
     (ROOT / "out" / "eval.json").write_text(json.dumps(result, indent=2, ensure_ascii=False))
     print(json.dumps({k: v for k, v in result.items() if k != "missed_errors"}, indent=2))
 ```
@@ -1549,31 +1935,38 @@ if __name__ == "__main__":
 Run: `pytest tests/test_evaluate.py -v`
 Expected: all pass
 
-- [ ] **Step 5: Run the real eval**
+- [ ] **Step 5: Run the real eval and read it with Richard**
 
 Run: `python -m vigil_pipeline.evaluate`
-Expected: a summary printed and `out/eval.json` written. Read `missed_errors` together with Richard. They become the case study's "failure that got through" (spec §9).
+
+Check that `served_models` has exactly one entry. Read `missed_errors`: they become the case study's "failure that got through" (spec §9). Phrase the results like this, with the numbers filled in from `eval.json`:
+
+> On N public datasheets (one labeller; M held out from tuning), quote verification flagged X of Y wrong extractions (95% CI a–b). Accepted fields were P% correct, against Q% for a single-prompt baseline, at K× the cost. It did not catch Z errors, e.g. wrong-variant picks. These results are for this model and document mix.
 
 - [ ] **Step 6: Commit**
 
 ```bash
 git add pipeline/vigil_pipeline/evaluate.py pipeline/tests/test_evaluate.py
-git commit -m "feat(pipeline): evaluation of checked vs baseline against labels"
+git commit -m "feat(pipeline): three-arm evaluation with selective metrics and bootstrap CIs"
 ```
 
 ---
 
-### Task 9: Export the demo set and final checks
+### Task 9: Export the demo set, schema and final checks
 
 **Files:**
 - Create: `pipeline/vigil_pipeline/export.py`
 - Test: `pipeline/tests/test_export.py`
 
 **Interfaces:**
-- Consumes: the `out/<id>.json` and `out/eval.json` files (Tasks 6 and 8)
+- Consumes:
+  - `FIELDS`, `CLUSTERS`, `CLUSTER_LABELS` (Task 1)
+  - `allowed_units` (Task 2)
+  - The `out/` files (Tasks 6 and 8)
 - Produces:
-  - `export(ids, out_dir, dest) -> None`, run as `python -m vigil_pipeline.export ID [ID ...] --dest ../app/public/data`
-  - It writes `dest/<id>.json`, `dest/eval.json` and `dest/index.json` (`[{ "id", "title" }]`, in the order given). **Plan 2 reads exactly these files.**
+  - `schema_json() -> dict`
+  - `export(ids, out_dir, dest) -> None`, run as `python -m vigil_pipeline.export ID [ID ...] [--dest DIR]`
+  - It writes `dest/<id>.json`, `dest/eval.json`, `dest/index.json` (`[{id, title}]`, in the order given) and `dest/schema.json`. **Plan 2 reads exactly these files.**
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1583,10 +1976,20 @@ import json
 
 import pytest
 
-from vigil_pipeline.export import export
+from vigil_pipeline.export import export, schema_json
 
 
-def test_export_writes_index_in_order(tmp_path):
+def test_schema_json_has_everything_the_review_screen_needs():
+    s = schema_json()
+    assert [c["id"] for c in s["clusters"]][0] == "general" and s["clusters"][0]["label"]
+    cap = next(f for f in s["fields"] if f["id"] == "rated_capacity")
+    assert cap["allowed_units"] == ["Ah", "mAh"] and cap["min"] == 0.01 and cap["vtype"] == "number"
+    carbon = next(f for f in s["fields"] if f["id"] == "carbon_footprint")
+    assert carbon["allowed_units"] == ["kg CO2e/kWh"]
+    assert next(f for f in s["fields"] if f["id"] == "chemistry")["allowed_units"] == []
+
+
+def test_export_writes_index_schema_and_eval(tmp_path):
     out = tmp_path / "out"
     out.mkdir()
     for id_, title in (("a", "Cell A"), ("b", "Cell B")):
@@ -1597,6 +2000,7 @@ def test_export_writes_index_in_order(tmp_path):
     assert json.loads((dest / "index.json").read_text()) == [{"id": "b", "title": "Cell B"},
                                                              {"id": "a", "title": "Cell A"}]
     assert (dest / "a.json").exists() and json.loads((dest / "eval.json").read_text())["datasheets"] == 2
+    assert len(json.loads((dest / "schema.json").read_text())["fields"]) == 25
 
 
 def test_export_refuses_missing_id(tmp_path):
@@ -1615,13 +2019,25 @@ Expected: FAIL with `ModuleNotFoundError`
 
 `pipeline/vigil_pipeline/export.py`:
 ```python
-"""python -m vigil_pipeline.export ID [ID ...] --dest ../app/public/data"""
+"""python -m vigil_pipeline.export ID [ID ...] [--dest ../app/public/data]"""
 import argparse
 import json
 import shutil
+from dataclasses import asdict
 from pathlib import Path
 
+from .schema import CLUSTER_LABELS, CLUSTERS, FIELDS
+from .units import allowed_units
+
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def schema_json() -> dict:
+    return {
+        "clusters": [{"id": c, "label": CLUSTER_LABELS[c]} for c in CLUSTERS],
+        "fields": [{**asdict(f), "allowed_units": (allowed_units(f.unit) or [f.unit]) if f.unit else []}
+                   for f in FIELDS],
+    }
 
 
 def export(ids: list[str], out_dir, dest) -> None:
@@ -1636,6 +2052,7 @@ def export(ids: list[str], out_dir, dest) -> None:
         index.append({"id": i, "title": json.loads((out_dir / f"{i}.json").read_text())["title"]})
     shutil.copyfile(out_dir / "eval.json", dest / "eval.json")
     (dest / "index.json").write_text(json.dumps(index, indent=2, ensure_ascii=False))
+    (dest / "schema.json").write_text(json.dumps(schema_json(), indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":
@@ -1654,22 +2071,22 @@ Expected: all pass
 
 - [ ] **Step 5: Pick the demo set together with Richard (spec §5.3)**
 
-From `out/`, choose 3–4 ids:
+Choose 3–4 ids from the **test** split:
 1. One clean sheet, with mostly `verified-source` fields.
-2. One where a `review` field is a **real** model error (find it in `out/eval.json` → compare `wrong_flagged`, or search the outputs for `review` fields whose value disagrees with the label).
+2. One where a `review` field is a **real** wrong value that the check caught. To find one, look for sheets with a `caught` field: a record that is `review` and disagrees with its label.
 3. One with many `supplier` and `estimate` gaps.
 
-If the check caught no real error at all, use the most instructive real `review` field instead, and note that for the case study. **Never edit output values by hand.**
+If the check caught nothing real, use the most instructive real `review` field instead, and say so in the case study. **Never edit output values by hand.**
 
 Then run: `python -m vigil_pipeline.export <id1> <id2> <id3>`
 
 - [ ] **Step 6: Verify the carbon estimate citation**
 
-Open the IVL 2019 report (Emilsson & Dahllöf, "Lithium-Ion Vehicle Battery Production") and confirm the 61–106 kg CO2e/kWh range. If it differs, update `estimates.py` and `test_check.py` together, then rerun `pytest` and `python -m vigil_pipeline.run` and export again.
+Open IVL report C444 (Emilsson & Dahllöf, 2019) and confirm the 61–106 kg CO2e per kWh range. If it differs, update `estimates.py` and `test_check.py` together, then rerun `pytest`.
 
 - [ ] **Step 7: Commit**
 
 ```bash
 git add pipeline/vigil_pipeline/export.py pipeline/tests/test_export.py app/public/data
-git commit -m "feat(pipeline): export demo datasheets and eval for the app"
+git commit -m "feat(pipeline): export demo datasheets, eval and field schema for the app"
 ```
