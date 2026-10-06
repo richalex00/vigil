@@ -156,5 +156,5 @@ vigil-demo/
 ## 10. Open items for the plan stage (not blockers)
 
 - **Final field list:** confirm the about 22 fields against the Battery Pass data model, and source the industry-average carbon figures.
-- **Extraction model:** confirm the current Sonnet model ID and structured-output method via the claude-api reference.
+- **Extraction model:** Plan 1 uses `claude-opus-5-5`. Richard may switch to a cheaper model later, e.g. `gemini-2.5-flash` as used in StuddyBuddy. Keep every model call inside `pipeline/vigil_pipeline/extract.py` so a switch touches one file, and rerun the eval after any switch, since the numbers belong to the model that produced them.
 - **Fonts:** pick the exact monospace face.
