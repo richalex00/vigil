@@ -70,7 +70,7 @@ vigil-demo/
 
 **Contract:** the app reads only the JSON in `app/public/data/`. It has no API key and no network calls beyond static files. A copy script moves the chosen files from `pipeline/out`.
 
-**Portfolio integration:** `npm run vigil:sync` in `~/Documents/GitHub/portfolio` copies `vigil-demo/app/dist` to `portfolio/public/vigil-demo/`. That's the same pattern as `demo:sync` for StuddyBuddy. The Vigil entry in `src/data/site.ts` gets a `demo` block ("Try the demo"), which opens in the existing pixel window, plus a new case-study section with the eval results.
+**Portfolio integration:** `npm run vigil:sync` in `~/Documents/GitHub/portfolio` builds the app (`npm --prefix ../vigil-demo/app run build`), runs `rm -rf` on `public/vigil-demo/`, then copies `vigil-demo/app/dist` there. That's the same pattern as `demo:sync` for StuddyBuddy, plus the build step. Vite uses `base: "/vigil-demo/"`, and all data fetches go through `import.meta.env.BASE_URL`, so the app works both under the portfolio and in local dev. The Vigil entry in `src/data/site.ts` gets a `demo` block ("Try the demo"), which opens in the existing pixel window, plus a new case-study section with the eval results.
 
 ## 5. Pipeline
 
@@ -83,7 +83,8 @@ vigil-demo/
    - **`review`:** any check fails. The failure reason is stored, e.g. "quote not found in document" or "value outside plausible range".
    - **`estimate`:** fields the schema marks as estimable (e.g. carbon footprint) and that are absent from the document. They're filled from a stated industry-average table with its source cited.
    - **`supplier`:** fields the schema marks as supplier-held (e.g. recycled content share) and that are absent.
-   - **`derived`:** computed by code from other verified fields (e.g. rated energy = capacity × nominal voltage).
+   - **`derived`:** computed by code from other verified fields (e.g. rated energy = capacity × nominal voltage). If any input field isn't `verified-source`, the derived field is `review` with the reason "depends on unverified field".
+   - **`not_found` on any other field** (e.g. manufacturer, UN 38.3, extinguishing agent) → `review` with the reason "not found in document". Every field therefore always ends with exactly one status.
    - **Confidence** in the UI comes from these checks, not from the model rating itself.
 4. **Baseline:** the same datasheets through one plain prompt (no quotes, no checks), outputting values only.
 5. **Eval:** compares extract-then-check and the baseline against `labels/` and writes `eval.json`:
@@ -106,7 +107,7 @@ vigil-demo/
 
 - **About 30 public datasheets** spanning several manufacturers and layouts: cylindrical cells (18650/21700, e.g. LG, Samsung, Molicel, Panasonic) plus a few e-bike and home-storage packs. `sources.csv` records the URL for each.
 - **Ground truth:** Richard labels every field in a spreadsheet, about 2–3 hours. Claude may pre-fill a draft, but **Richard checks every value against the PDF**. Unchecked pre-fills would make the eval circular.
-- **Demo set:** 3–4 datasheets chosen from the results: one clean, one where the check caught a real model error, and one with many supplier and estimate gaps.
+- **Demo set:** 3–4 datasheets chosen from the results: one clean, one where the check caught a real model error, and one with many supplier and estimate gaps. **If the check never catches a real error** across the ~30 sheets, the demo uses the most instructive real `review` field instead (e.g. a value that wasn't in the document), and the case study reports the result honestly. Errors are never planted.
 
 ## 6. Demo flow
 
@@ -114,10 +115,10 @@ vigil-demo/
 2. **Extraction:** a monospace datasheet "scan" while fields stream in with confidence readouts. It's a replay of the saved real run at a readable speed, with the original timings shown alongside.
 3. **Review (the hero screen):**
    - Hovering or focusing a field highlights its source line, and the other way round.
-   - `verified-source` fields can be accepted in one batch. `review` fields need a fix or a confirm, and the stored failure reason is shown.
+   - `verified-source` fields can be accepted in one batch. `review` fields need a fix or a confirm, and the stored failure reason is shown. A fix is a value plus a unit (from the schema's allowed units), checked against the same range rule as the pipeline. An out-of-range fix shows an inline warning but can still be confirmed, because the user is the authority.
    - Estimates can be accepted or overridden. `supplier` fields go into a drafted supplier request the user can preview (it's never sent).
    - Every resolution grows its ring segment.
-4. **Passport:** the rings close and the view switches to Ivory. It shows the public passport with a QR code (encoding the demo URL), with fields grouped into the official battery clusters and tagged as self-declared, verified, estimated or derived.
+4. **Passport:** the rings close and the view switches to Ivory. It shows the public passport with a QR code encoding `https://richalex00.github.io/vigil-demo/`, a fixed production URL that's never localhost, with fields grouped into the official battery clusters and tagged as self-declared, verified, estimated or derived.
 5. **Life (concept):** a tab on the passport.
    - A time scrubber plays the battery's simulated life forward: one ring per year, with ring thickness showing state of health.
    - Notches mark events (repair, cell swap, change of owner), and a coral checkpoint marks a verified inspection.
