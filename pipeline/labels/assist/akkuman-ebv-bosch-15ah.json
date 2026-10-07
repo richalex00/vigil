@@ -1,0 +1,85 @@
+{
+  "model": "claude-sonnet-5-5",
+  "fields": {
+    "manufacturer": {
+      "value": "Akku Vision GmbH",
+      "unit": ""
+    },
+    "model_identifier": {
+      "value": "15 Ah / 540 Wh Downtube Battery",
+      "unit": ""
+    },
+    "battery_category": {
+      "value": "",
+      "unit": ""
+    },
+    "chemistry": {
+      "value": "",
+      "unit": ""
+    },
+    "weight": {
+      "value": "2800",
+      "unit": "g"
+    },
+    "rated_capacity": {
+      "value": "15",
+      "unit": "Ah"
+    },
+    "nominal_voltage": {
+      "value": "36",
+      "unit": "V"
+    },
+    "min_voltage": {
+      "value": "",
+      "unit": ""
+    },
+    "max_voltage": {
+      "value": "",
+      "unit": ""
+    },
+    "max_discharge_current": {
+      "value": "15",
+      "unit": "A"
+    },
+    "internal_resistance": {
+      "value": "",
+      "unit": ""
+    },
+    "expected_lifetime_cycles": {
+      "value": "",
+      "unit": ""
+    },
+    "capacity_threshold_pct": {
+      "value": "",
+      "unit": ""
+    },
+    "operating_temp_min": {
+      "value": "",
+      "unit": ""
+    },
+    "operating_temp_max": {
+      "value": "",
+      "unit": ""
+    },
+    "hazardous_substances": {
+      "value": "",
+      "unit": ""
+    },
+    "dismantling_info": {
+      "value": "",
+      "unit": ""
+    },
+    "extinguishing_agent": {
+      "value": "",
+      "unit": ""
+    },
+    "un38_3_test": {
+      "value": "",
+      "unit": ""
+    },
+    "eu_declaration_ref": {
+      "value": "",
+      "unit": ""
+    }
+  }
+}

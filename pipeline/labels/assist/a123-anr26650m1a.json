@@ -1,0 +1,85 @@
+{
+  "model": "claude-sonnet-5-5",
+  "fields": {
+    "manufacturer": {
+      "value": "A123Systems, Inc.",
+      "unit": ""
+    },
+    "model_identifier": {
+      "value": "ANR26650M1A",
+      "unit": ""
+    },
+    "battery_category": {
+      "value": "",
+      "unit": ""
+    },
+    "chemistry": {
+      "value": "",
+      "unit": ""
+    },
+    "weight": {
+      "value": "70",
+      "unit": "grams"
+    },
+    "rated_capacity": {
+      "value": "2.3",
+      "unit": "Ah"
+    },
+    "nominal_voltage": {
+      "value": "3.3",
+      "unit": "V"
+    },
+    "min_voltage": {
+      "value": "1.6",
+      "unit": "V"
+    },
+    "max_voltage": {
+      "value": "3.6",
+      "unit": "V"
+    },
+    "max_discharge_current": {
+      "value": "70",
+      "unit": "A"
+    },
+    "internal_resistance": {
+      "value": "8",
+      "unit": "mΩ"
+    },
+    "expected_lifetime_cycles": {
+      "value": "1,000",
+      "unit": "cycles"
+    },
+    "capacity_threshold_pct": {
+      "value": "",
+      "unit": ""
+    },
+    "operating_temp_min": {
+      "value": "-30",
+      "unit": "°C"
+    },
+    "operating_temp_max": {
+      "value": "60",
+      "unit": "°C"
+    },
+    "hazardous_substances": {
+      "value": "",
+      "unit": ""
+    },
+    "dismantling_info": {
+      "value": "",
+      "unit": ""
+    },
+    "extinguishing_agent": {
+      "value": "",
+      "unit": ""
+    },
+    "un38_3_test": {
+      "value": "",
+      "unit": ""
+    },
+    "eu_declaration_ref": {
+      "value": "",
+      "unit": ""
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "model": "claude-sonnet-5-5",
+  "fields": {
+    "manufacturer": {
+      "value": "Samsung SDI Co., Ltd.",
+      "unit": ""
+    },
+    "model_identifier": {
+      "value": "INR18650-35E",
+      "unit": ""
+    },
+    "battery_category": {
+      "value": "",
+      "unit": ""
+    },
+    "chemistry": {
+      "value": "",
+      "unit": ""
+    },
+    "weight": {
+      "value": "50",
+      "unit": "g"
+    },
+    "rated_capacity": {
+      "value": "",
+      "unit": ""
+    },
+    "nominal_voltage": {
+      "value": "3.60",
+      "unit": "V"
+    },
+    "min_voltage": {
+      "value": "2.65",
+      "unit": "V"
+    },
+    "max_voltage": {
+      "value": "4.2",
+      "unit": "V"
+    },
+    "max_discharge_current": {
+      "value": "8,000",
+      "unit": "mA"
+    },
+    "internal_resistance": {
+      "value": "35",
+      "unit": "mΩ"
+    },
+    "expected_lifetime_cycles": {
+      "value": "500",
+      "unit": "cycles"
+    },
+    "capacity_threshold_pct": {
+      "value": "60",
+      "unit": "%"
+    },
+    "operating_temp_min": {
+      "value": "-10",
+      "unit": "°C"
+    },
+    "operating_temp_max": {
+      "value": "60",
+      "unit": "°C"
+    },
+    "hazardous_substances": {
+      "value": "the cell contains no environmentally hazardous component, such as lead or cadmium",
+      "unit": ""
+    },
+    "dismantling_info": {
+      "value": "The cell should not be dismantled from the battery pack.",
+      "unit": ""
+    },
+    "extinguishing_agent": {
+      "value": "",
+      "unit": ""
+    },
+    "un38_3_test": {
+      "value": "",
+      "unit": ""
+    },
+    "eu_declaration_ref": {
+      "value": "",
+      "unit": ""
+    }
+  }
+}

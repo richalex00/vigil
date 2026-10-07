@@ -1,0 +1,521 @@
+datasheet_id,field_id,value,unit,prefill_value,prefill_unit,assist_value,assist_unit,blind,queue,checked
+a123-anr26650m1a,manufacturer,"A123Systems, Inc.",,"A123Systems, Inc.",,"A123Systems, Inc.",,,audit,
+a123-anr26650m1a,model_identifier,ANR26650M1A,,ANR26650M1A,,ANR26650M1A,,,,auto
+a123-anr26650m1a,battery_category,,,,,,,,,auto
+a123-anr26650m1a,chemistry,,,,,,,,,auto
+a123-anr26650m1a,weight,70,grams,70,grams,70,grams,,audit,
+a123-anr26650m1a,rated_capacity,2.3,Ah,2.3,Ah,2.3,Ah,,,auto
+a123-anr26650m1a,nominal_voltage,3.3,V,3.3,V,3.3,V,,,auto
+a123-anr26650m1a,min_voltage,1.6,V,1.6,V,1.6,V,,,auto
+a123-anr26650m1a,max_voltage,3.6,V,3.6,V,3.6,V,,,auto
+a123-anr26650m1a,max_discharge_current,70,A,70,A,70,A,,,auto
+a123-anr26650m1a,internal_resistance,8,mΩ,8,mΩ,8,mΩ,,,auto
+a123-anr26650m1a,expected_lifetime_cycles,"1,000",cycles,"1,000",cycles,"1,000",cycles,,,auto
+a123-anr26650m1a,capacity_threshold_pct,,,,,,,,,auto
+a123-anr26650m1a,operating_temp_min,-30,°C,-30,°C,-30,°C,,,auto
+a123-anr26650m1a,operating_temp_max,60,°C,+60,°C,60,°C,,,auto
+a123-anr26650m1a,hazardous_substances,,,,,,,,,auto
+a123-anr26650m1a,dismantling_info,,,,,,,,audit,
+a123-anr26650m1a,extinguishing_agent,,,,,,,,,auto
+a123-anr26650m1a,un38_3_test,,,,,,,,,auto
+a123-anr26650m1a,eu_declaration_ref,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,manufacturer,Akku Vision GmbH,,Akku Vision GmbH,,Akku Vision GmbH,,,,auto
+akkuman-ebv-bosch-15ah,model_identifier,15 Ah / 540 Wh Downtube Battery,,EBV E-BIKE BATTERY,,15 Ah / 540 Wh Downtube Battery,,,disagree,
+akkuman-ebv-bosch-15ah,battery_category,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,chemistry,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,weight,2800,g,2800,g,2800,g,,,auto
+akkuman-ebv-bosch-15ah,rated_capacity,15,Ah,15,Ah,15,Ah,,,auto
+akkuman-ebv-bosch-15ah,nominal_voltage,36,V,36,V,36,V,,,auto
+akkuman-ebv-bosch-15ah,min_voltage,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,max_voltage,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,max_discharge_current,15,A,15,A,15,A,,,auto
+akkuman-ebv-bosch-15ah,internal_resistance,,,,,,,,audit,
+akkuman-ebv-bosch-15ah,expected_lifetime_cycles,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,capacity_threshold_pct,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,operating_temp_min,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,operating_temp_max,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,hazardous_substances,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,dismantling_info,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,extinguishing_agent,,,,,,,,,auto
+akkuman-ebv-bosch-15ah,un38_3_test,,,,,,,,audit,
+akkuman-ebv-bosch-15ah,eu_declaration_ref,,,,,,,,,auto
+akkuman-powerpack-yamaha,manufacturer,Akku Vision GmbH,,Akku Vision GmbH,,Akku Vision GmbH,,,,auto
+akkuman-powerpack-yamaha,model_identifier,PowerPack for Yamaha 36 V,,"E-BIKE VISION POWERPACK, COMPATIBLE TO YAMAHA* PW SERIES WITH 36 V",,PowerPack for Yamaha 36 V,,,disagree,
+akkuman-powerpack-yamaha,battery_category,,,,,,,,,auto
+akkuman-powerpack-yamaha,chemistry,,,,,,,,,auto
+akkuman-powerpack-yamaha,weight,approx. 3500,g,3500,g,approx. 3500,g,,,auto
+akkuman-powerpack-yamaha,rated_capacity,"17,1",Ah,"17,1",Ah,"17,1",Ah,,,auto
+akkuman-powerpack-yamaha,nominal_voltage,36,V,36,V,36,V,,audit,
+akkuman-powerpack-yamaha,min_voltage,,,,,,,,,auto
+akkuman-powerpack-yamaha,max_voltage,,,,,,,,,auto
+akkuman-powerpack-yamaha,max_discharge_current,15,A,15,A,15,A,,,auto
+akkuman-powerpack-yamaha,internal_resistance,,,,,,,,,auto
+akkuman-powerpack-yamaha,expected_lifetime_cycles,,,,,,,,,auto
+akkuman-powerpack-yamaha,capacity_threshold_pct,,,,,,,,,auto
+akkuman-powerpack-yamaha,operating_temp_min,,,,,,,,,auto
+akkuman-powerpack-yamaha,operating_temp_max,,,,,,,,,auto
+akkuman-powerpack-yamaha,hazardous_substances,,,,,,,,,auto
+akkuman-powerpack-yamaha,dismantling_info,,,,,,,,,auto
+akkuman-powerpack-yamaha,extinguishing_agent,,,,,,,,audit,
+akkuman-powerpack-yamaha,un38_3_test,,,,,,,,,auto
+akkuman-powerpack-yamaha,eu_declaration_ref,,,,,,,,audit,
+calb-lc32230,manufacturer,ExpertPower,,ExpertPower,,ExpertPower,,,audit,
+calb-lc32230,model_identifier,LC32230,,LC32230,,LC32230,,,,auto
+calb-lc32230,battery_category,,,,,,,,,auto
+calb-lc32230,chemistry,LiFePO4,,LiFePO4,,LiFePO4,,,audit,
+calb-lc32230,weight,4140,g,4140,g,4140,g,,,auto
+calb-lc32230,rated_capacity,230,Ah,230,Ah,230,Ah,,,auto
+calb-lc32230,nominal_voltage,3.2,V,3.2,V,3.2,V,,,auto
+calb-lc32230,min_voltage,2.5,V,2.5,V,2.5,V,,,auto
+calb-lc32230,max_voltage,3.65,V,3.65,V,3.65,V,,,auto
+calb-lc32230,max_discharge_current,1,C,1,C,1,C,,,auto
+calb-lc32230,internal_resistance,0.20,mΩ,0.20,mΩ,0.20,mΩ,,,auto
+calb-lc32230,expected_lifetime_cycles,4000,cycles,4000,Cycles,4000,cycles,,,auto
+calb-lc32230,capacity_threshold_pct,80,%,80,%,80,%,,,auto
+calb-lc32230,operating_temp_min,-35,℃,-35,℃,-35,℃,,,auto
+calb-lc32230,operating_temp_max,65,℃,65,℃,65,℃,,,auto
+calb-lc32230,hazardous_substances,,,,,,,,,auto
+calb-lc32230,dismantling_info,Disassembling the product without written consent from ExpertPower is strictly prohibited,,,,Disassembling the product without written consent from ExpertPower is strictly prohibited,,,disagree,
+calb-lc32230,extinguishing_agent,,,,,,,,,auto
+calb-lc32230,un38_3_test,,,,,,,,,auto
+calb-lc32230,eu_declaration_ref,,,,,,,,,auto
+danenergy-softpack-10s4p,manufacturer,,,,,,,y,blind,
+danenergy-softpack-10s4p,model_identifier,,,,,,,y,blind,
+danenergy-softpack-10s4p,battery_category,,,,,,,y,blind,
+danenergy-softpack-10s4p,chemistry,,,,,,,y,blind,
+danenergy-softpack-10s4p,weight,,,,,,,y,blind,
+danenergy-softpack-10s4p,rated_capacity,,,,,,,y,blind,
+danenergy-softpack-10s4p,nominal_voltage,,,,,,,y,blind,
+danenergy-softpack-10s4p,min_voltage,,,,,,,y,blind,
+danenergy-softpack-10s4p,max_voltage,,,,,,,y,blind,
+danenergy-softpack-10s4p,max_discharge_current,,,,,,,y,blind,
+danenergy-softpack-10s4p,internal_resistance,,,,,,,y,blind,
+danenergy-softpack-10s4p,expected_lifetime_cycles,,,,,,,y,blind,
+danenergy-softpack-10s4p,capacity_threshold_pct,,,,,,,y,blind,
+danenergy-softpack-10s4p,operating_temp_min,,,,,,,y,blind,
+danenergy-softpack-10s4p,operating_temp_max,,,,,,,y,blind,
+danenergy-softpack-10s4p,hazardous_substances,,,,,,,y,blind,
+danenergy-softpack-10s4p,dismantling_info,,,,,,,y,blind,
+danenergy-softpack-10s4p,extinguishing_agent,,,,,,,y,blind,
+danenergy-softpack-10s4p,un38_3_test,,,,,,,y,blind,
+danenergy-softpack-10s4p,eu_declaration_ref,,,,,,,y,blind,
+eve-lf314,manufacturer,"EVE Power Co., Ltd.",,"EVE Power Co., Ltd.",,"EVE Power Co., Ltd.",,,,auto
+eve-lf314,model_identifier,MB31,,MB31,,MB31,,,,auto
+eve-lf314,battery_category,,,,,,,,,auto
+eve-lf314,chemistry,LFP,,LFP,,LFP,,,,auto
+eve-lf314,weight,5600,g,5600,g,5600,g,,,auto
+eve-lf314,rated_capacity,314,Ah,314,Ah,314,Ah,,,auto
+eve-lf314,nominal_voltage,3.2,V,3.2,V,3.2,V,,audit,
+eve-lf314,min_voltage,2.5,V,2.5,V,2.5,V,,,auto
+eve-lf314,max_voltage,3.65,V,3.65,V,3.65,V,,,auto
+eve-lf314,max_discharge_current,,,,,,,,,auto
+eve-lf314,internal_resistance,0.18,mΩ,0.18,mΩ,0.18,mΩ,,,auto
+eve-lf314,expected_lifetime_cycles,8000,cycles,8000,cycles,8000,cycles,,,auto
+eve-lf314,capacity_threshold_pct,70,%,70,%,70,%,,,auto
+eve-lf314,operating_temp_min,-30,℃,-30,℃,-30,℃,,,auto
+eve-lf314,operating_temp_max,60,℃,60,℃,60,℃,,,auto
+eve-lf314,hazardous_substances,,,,,,,,,auto
+eve-lf314,dismantling_info,,,,,,,,,auto
+eve-lf314,extinguishing_agent,,,,,,,,,auto
+eve-lf314,un38_3_test,,,,,,,,,auto
+eve-lf314,eu_declaration_ref,,,,,,,,,auto
+molicel-inr18650-m35a,manufacturer,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,,,auto
+molicel-inr18650-m35a,model_identifier,INR-18650-M35A,,INR-18650-M35A,,INR-18650-M35A,,,,auto
+molicel-inr18650-m35a,battery_category,,,,,,,,,auto
+molicel-inr18650-m35a,chemistry,,,,,,,,audit,
+molicel-inr18650-m35a,weight,48.0 (Max),g,48.0,g,48.0 (Max),g,,,auto
+molicel-inr18650-m35a,rated_capacity,3.45,Ah,3.45,Ah,3.45,Ah,,,auto
+molicel-inr18650-m35a,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+molicel-inr18650-m35a,min_voltage,2.5,V,2.5,V,2.5,V,,,auto
+molicel-inr18650-m35a,max_voltage,4.20,V,4.20,V,4.20,V,,,auto
+molicel-inr18650-m35a,max_discharge_current,10,A,10,A,10,A,,,auto
+molicel-inr18650-m35a,internal_resistance,≤ 35,mΩ,35,mΩ,≤ 35,mΩ,,,auto
+molicel-inr18650-m35a,expected_lifetime_cycles,500,cycles,500,cycles,500,cycles,,,auto
+molicel-inr18650-m35a,capacity_threshold_pct,70,%,70,%,70,%,,audit,
+molicel-inr18650-m35a,operating_temp_min,-40,°C,-40,oC,-40,°C,,,auto
+molicel-inr18650-m35a,operating_temp_max,60,°C,60,oC,60,°C,,,auto
+molicel-inr18650-m35a,hazardous_substances,,,,,,,,audit,
+molicel-inr18650-m35a,dismantling_info,,,,,,,,,auto
+molicel-inr18650-m35a,extinguishing_agent,,,,,,,,,auto
+molicel-inr18650-m35a,un38_3_test,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,,,auto
+molicel-inr18650-m35a,eu_declaration_ref,,,,,,,,audit,
+molicel-inr18650-p26a,manufacturer,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,,audit,
+molicel-inr18650-p26a,model_identifier,INR-18650-P26A,,INR-18650-P26A,,INR-18650-P26A,,,,auto
+molicel-inr18650-p26a,battery_category,,,,,,,,,auto
+molicel-inr18650-p26a,chemistry,,,,,,,,audit,
+molicel-inr18650-p26a,weight,48.0 (Max),g,48.0 (Max),g,48.0 (Max),g,,,auto
+molicel-inr18650-p26a,rated_capacity,2.6,Ah,2.6,Ah,2.6,Ah,,,auto
+molicel-inr18650-p26a,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+molicel-inr18650-p26a,min_voltage,2.5,V,2.5,V,2.5,V,,,auto
+molicel-inr18650-p26a,max_voltage,4.20,V,4.20 – 0.05,V,4.20,V,,,auto
+molicel-inr18650-p26a,max_discharge_current,35,A,35,A,35,A,,,auto
+molicel-inr18650-p26a,internal_resistance,≤ 20,mΩ,≤ 20,mΩ,≤ 20,mΩ,,,auto
+molicel-inr18650-p26a,expected_lifetime_cycles,500,cycles,500,cycles,500,cycles,,,auto
+molicel-inr18650-p26a,capacity_threshold_pct,80,%,≥ 80,%,80,%,,,auto
+molicel-inr18650-p26a,operating_temp_min,-40,°C,-40,oC,-40,°C,,,auto
+molicel-inr18650-p26a,operating_temp_max,60,°C,60,oC,60,°C,,,auto
+molicel-inr18650-p26a,hazardous_substances,Comply with EU RoHS,,,,Comply with EU RoHS,,,disagree,
+molicel-inr18650-p26a,dismantling_info,,,,,,,,,auto
+molicel-inr18650-p26a,extinguishing_agent,,,,,,,,,auto
+molicel-inr18650-p26a,un38_3_test,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,,,auto
+molicel-inr18650-p26a,eu_declaration_ref,,,,,,,,audit,
+molicel-inr20700a,manufacturer,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,,,auto
+molicel-inr20700a,model_identifier,INR-20700A,,INR-20700A,,INR-20700A,,,,auto
+molicel-inr20700a,battery_category,,,,,,,,,auto
+molicel-inr20700a,chemistry,,,,,,,,,auto
+molicel-inr20700a,weight,60.0 (Max),g,60.0,g,60.0 (Max),g,,,auto
+molicel-inr20700a,rated_capacity,3.0,Ah,3.0,Ah,3.0,Ah,,audit,
+molicel-inr20700a,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+molicel-inr20700a,min_voltage,2.5,V,2.5,V,2.5,V,,,auto
+molicel-inr20700a,max_voltage,4.20,V,4.20,V,4.20,V,,,auto
+molicel-inr20700a,max_discharge_current,35,A,35,A,35,A,,,auto
+molicel-inr20700a,internal_resistance,≤ 20,mΩ,≤ 20,mΩ,≤ 20,mΩ,,,auto
+molicel-inr20700a,expected_lifetime_cycles,500,cycles,500,cycles,500,cycles,,,auto
+molicel-inr20700a,capacity_threshold_pct,80,%,80,%,80,%,,,auto
+molicel-inr20700a,operating_temp_min,-40,°C,-40,oC,-40,°C,,,auto
+molicel-inr20700a,operating_temp_max,60,°C,60,oC,60,°C,,,auto
+molicel-inr20700a,hazardous_substances,,,,,,,,audit,
+molicel-inr20700a,dismantling_info,,,,,,,,audit,
+molicel-inr20700a,extinguishing_agent,,,,,,,,,auto
+molicel-inr20700a,un38_3_test,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,,audit,
+molicel-inr20700a,eu_declaration_ref,,,,,,,,,auto
+molicel-inr21700-m50a,manufacturer,E-One Moli Energy,,E-One Moli Energy,,E-One Moli Energy,,,,auto
+molicel-inr21700-m50a,model_identifier,INR-21700-M50A,,INR-21700-M50A,,INR-21700-M50A,,,,auto
+molicel-inr21700-m50a,battery_category,,,,,,,,audit,
+molicel-inr21700-m50a,chemistry,,,,,,,,,auto
+molicel-inr21700-m50a,weight,68,g,68,g,68,g,,,auto
+molicel-inr21700-m50a,rated_capacity,5000,mAh,5000,mAh,5000,mAh,,,auto
+molicel-inr21700-m50a,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+molicel-inr21700-m50a,min_voltage,2.5,V,2.5,V,2.5,V,,audit,
+molicel-inr21700-m50a,max_voltage,4.2,V,4.2,V,4.2,V,,,auto
+molicel-inr21700-m50a,max_discharge_current,20,A,20,A,20,A,,,auto
+molicel-inr21700-m50a,internal_resistance,15,mW,15,mW,15,mW,,,auto
+molicel-inr21700-m50a,expected_lifetime_cycles,,,,,,,,,auto
+molicel-inr21700-m50a,capacity_threshold_pct,,,,,,,,,auto
+molicel-inr21700-m50a,operating_temp_min,-30,°C,-30,°C,-30,°C,,,auto
+molicel-inr21700-m50a,operating_temp_max,45,°C,45,°C,45,°C,,,auto
+molicel-inr21700-m50a,hazardous_substances,,,,,,,,,auto
+molicel-inr21700-m50a,dismantling_info,,,,,,,,,auto
+molicel-inr21700-m50a,extinguishing_agent,,,,,,,,audit,
+molicel-inr21700-m50a,un38_3_test,,,,,,,,,auto
+molicel-inr21700-m50a,eu_declaration_ref,,,,,,,,,auto
+molicel-inr21700-p42a,manufacturer,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,,,auto
+molicel-inr21700-p42a,model_identifier,INR-21700-P42A,,INR-21700-P42A,,INR-21700-P42A,,,audit,
+molicel-inr21700-p42a,battery_category,,,,,,,,,auto
+molicel-inr21700-p42a,chemistry,,,,,,,,,auto
+molicel-inr21700-p42a,weight,70.0 (Max),g,70.0,g,70.0 (Max),g,,,auto
+molicel-inr21700-p42a,rated_capacity,4.0,Ah,4.2,Ah,4.0,Ah,,disagree,
+molicel-inr21700-p42a,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+molicel-inr21700-p42a,min_voltage,2.5,V,2.5,V,2.5,V,,,auto
+molicel-inr21700-p42a,max_voltage,4.20,V,4.20,V,4.20,V,,,auto
+molicel-inr21700-p42a,max_discharge_current,45,A,45,A,45,A,,,auto
+molicel-inr21700-p42a,internal_resistance,≤ 15,mΩ,≤ 15,mΩ,≤ 15,mΩ,,audit,
+molicel-inr21700-p42a,expected_lifetime_cycles,500,cycles,500,cycles,500,cycles,,,auto
+molicel-inr21700-p42a,capacity_threshold_pct,80,%,80,%,80,%,,,auto
+molicel-inr21700-p42a,operating_temp_min,-40,°C,-40,oC,-40,°C,,,auto
+molicel-inr21700-p42a,operating_temp_max,60,°C,60,oC,60,°C,,,auto
+molicel-inr21700-p42a,hazardous_substances,,,,,,,,,auto
+molicel-inr21700-p42a,dismantling_info,,,,,,,,,auto
+molicel-inr21700-p42a,extinguishing_agent,,,,,,,,,auto
+molicel-inr21700-p42a,un38_3_test,,,,,,,,,auto
+molicel-inr21700-p42a,eu_declaration_ref,,,,,,,,,auto
+panasonic-ncr18650b,manufacturer,,,,,,,,audit,
+panasonic-ncr18650b,model_identifier,NCR18650B,,NCR18650B,,NCR18650B,,,,auto
+panasonic-ncr18650b,battery_category,,,,,,,,,auto
+panasonic-ncr18650b,chemistry,,,,,,,,,auto
+panasonic-ncr18650b,weight,47.5,g,47.5,g,47.5,g,,,auto
+panasonic-ncr18650b,rated_capacity,3350,mAh,3350,mAh,3350,mAh,,,auto
+panasonic-ncr18650b,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+panasonic-ncr18650b,min_voltage,2.5,V,2.5,V,2.5,V,,,auto
+panasonic-ncr18650b,max_voltage,4.2,V,4.2,V,4.2,V,,,auto
+panasonic-ncr18650b,max_discharge_current,,,,,,,,,auto
+panasonic-ncr18650b,internal_resistance,,,,,,,,audit,
+panasonic-ncr18650b,expected_lifetime_cycles,,,,,,,,,auto
+panasonic-ncr18650b,capacity_threshold_pct,,,,,,,,,auto
+panasonic-ncr18650b,operating_temp_min,-20,℃,-20,℃,-20,℃,,,auto
+panasonic-ncr18650b,operating_temp_max,60,℃,+60,℃,60,℃,,,auto
+panasonic-ncr18650b,hazardous_substances,,,,,,,,,auto
+panasonic-ncr18650b,dismantling_info,,,,,,,,,auto
+panasonic-ncr18650b,extinguishing_agent,,,,,,,,,auto
+panasonic-ncr18650b,un38_3_test,,,,,,,,,auto
+panasonic-ncr18650b,eu_declaration_ref,,,,,,,,,auto
+panasonic-ncr18650bd,manufacturer,,,,,,,,,auto
+panasonic-ncr18650bd,model_identifier,NCR18650BD,,NCR18650BD,,NCR18650BD,,,,auto
+panasonic-ncr18650bd,battery_category,,,,,,,,,auto
+panasonic-ncr18650bd,chemistry,,,,,,,,,auto
+panasonic-ncr18650bd,weight,49.5,g,49.5,g,49.5,g,,,auto
+panasonic-ncr18650bd,rated_capacity,2980,mAh,2980,mAh,2980,mAh,,,auto
+panasonic-ncr18650bd,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+panasonic-ncr18650bd,min_voltage,,,,,,,,,auto
+panasonic-ncr18650bd,max_voltage,4.20,V,4.20,V,4.20,V,,,auto
+panasonic-ncr18650bd,max_discharge_current,,,,,,,,audit,
+panasonic-ncr18650bd,internal_resistance,,,,,,,,,auto
+panasonic-ncr18650bd,expected_lifetime_cycles,,,,,,,,,auto
+panasonic-ncr18650bd,capacity_threshold_pct,,,,,,,,,auto
+panasonic-ncr18650bd,operating_temp_min,-20,°C,-20,°C,-20,°C,,,auto
+panasonic-ncr18650bd,operating_temp_max,60,°C,+60,°C,60,°C,,,auto
+panasonic-ncr18650bd,hazardous_substances,,,,,,,,,auto
+panasonic-ncr18650bd,dismantling_info,,,,,,,,,auto
+panasonic-ncr18650bd,extinguishing_agent,,,,,,,,audit,
+panasonic-ncr18650bd,un38_3_test,,,,,,,,,auto
+panasonic-ncr18650bd,eu_declaration_ref,,,,,,,,,auto
+panasonic-ncr2070c,manufacturer,"SANYO Electric Co., Ltd.",,Panasonic Corporation,,"SANYO Electric Co., Ltd.",,,disagree,
+panasonic-ncr2070c,model_identifier,NCR2070C,,NCR2070C,,NCR2070C,,,,auto
+panasonic-ncr2070c,battery_category,,,,,,,,,auto
+panasonic-ncr2070c,chemistry,,,,,,,,,auto
+panasonic-ncr2070c,weight,62.0,g,62.0,g,62.0,g,,,auto
+panasonic-ncr2070c,rated_capacity,3475,mAh,3475,mAh,3475,mAh,,,auto
+panasonic-ncr2070c,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+panasonic-ncr2070c,min_voltage,,,,,,,,,auto
+panasonic-ncr2070c,max_voltage,4.20,V,4.20,V,4.20,V,,,auto
+panasonic-ncr2070c,max_discharge_current,,,,,,,,,auto
+panasonic-ncr2070c,internal_resistance,10,mΩ,10,mΩ,10,mΩ,,,auto
+panasonic-ncr2070c,expected_lifetime_cycles,,,,,,,,,auto
+panasonic-ncr2070c,capacity_threshold_pct,,,,,,,,,auto
+panasonic-ncr2070c,operating_temp_min,-20,°C,-20,°C,-20,°C,,audit,
+panasonic-ncr2070c,operating_temp_max,60,°C,+60,°C,60,°C,,,auto
+panasonic-ncr2070c,hazardous_substances,,,,,,,,,auto
+panasonic-ncr2070c,dismantling_info,,,,,,,,,auto
+panasonic-ncr2070c,extinguishing_agent,,,,,,,,,auto
+panasonic-ncr2070c,un38_3_test,,,,,,,,audit,
+panasonic-ncr2070c,eu_declaration_ref,,,,,,,,audit,
+pylontech-us-series,manufacturer,,,,,,,y,blind,
+pylontech-us-series,model_identifier,,,,,,,y,blind,
+pylontech-us-series,battery_category,,,,,,,y,blind,
+pylontech-us-series,chemistry,,,,,,,y,blind,
+pylontech-us-series,weight,,,,,,,y,blind,
+pylontech-us-series,rated_capacity,,,,,,,y,blind,
+pylontech-us-series,nominal_voltage,,,,,,,y,blind,
+pylontech-us-series,min_voltage,,,,,,,y,blind,
+pylontech-us-series,max_voltage,,,,,,,y,blind,
+pylontech-us-series,max_discharge_current,,,,,,,y,blind,
+pylontech-us-series,internal_resistance,,,,,,,y,blind,
+pylontech-us-series,expected_lifetime_cycles,,,,,,,y,blind,
+pylontech-us-series,capacity_threshold_pct,,,,,,,y,blind,
+pylontech-us-series,operating_temp_min,,,,,,,y,blind,
+pylontech-us-series,operating_temp_max,,,,,,,y,blind,
+pylontech-us-series,hazardous_substances,,,,,,,y,blind,
+pylontech-us-series,dismantling_info,,,,,,,y,blind,
+pylontech-us-series,extinguishing_agent,,,,,,,y,blind,
+pylontech-us-series,un38_3_test,,,,,,,y,blind,
+pylontech-us-series,eu_declaration_ref,,,,,,,y,blind,
+rs-lfp-14500,manufacturer,ANSMANN,,ANSMANN,,ANSMANN,,,audit,
+rs-lfp-14500,model_identifier,1300-0021,,1300-0021,,1300-0021,,,audit,
+rs-lfp-14500,battery_category,,,,,,,,,auto
+rs-lfp-14500,chemistry,LiFePO4,,LiFePO,,LiFePO4,,,disagree,
+rs-lfp-14500,weight,18 ± 2,g,18,g,18 ± 2,g,,,auto
+rs-lfp-14500,rated_capacity,500,mAh,500,mAh,500,mAh,,,auto
+rs-lfp-14500,nominal_voltage,3.2,V,3.2,V,3.2,V,,,auto
+rs-lfp-14500,min_voltage,2.75,V,2.0,V,2.75,V,,disagree,
+rs-lfp-14500,max_voltage,3.65,V,3.65,V,3.65,V,,,auto
+rs-lfp-14500,max_discharge_current,250,mA,250,mA,250,mA,,,auto
+rs-lfp-14500,internal_resistance,≤ 120,mΩ,120,mΩ,≤ 120,mΩ,,,auto
+rs-lfp-14500,expected_lifetime_cycles,≥ 1000,cycles,1000,cycles,≥ 1000,cycles,,,auto
+rs-lfp-14500,capacity_threshold_pct,70,%,70,%,70,%,,,auto
+rs-lfp-14500,operating_temp_min,-20,°C,- 20,°C,-20,°C,,disagree,
+rs-lfp-14500,operating_temp_max,60,°C,60,°C,60,°C,,,auto
+rs-lfp-14500,hazardous_substances,,,,,,,,,auto
+rs-lfp-14500,dismantling_info,,,,,,,,,auto
+rs-lfp-14500,extinguishing_agent,,,,,,,,,auto
+rs-lfp-14500,un38_3_test,,,,,,,,,auto
+rs-lfp-14500,eu_declaration_ref,,,,,,,,,auto
+samsung-inr18650-25r,manufacturer,"Samsung SDI Co., Ltd.",,"Samsung SDI Co., Ltd.",,"Samsung SDI Co., Ltd.",,,,auto
+samsung-inr18650-25r,model_identifier,INR18650-25R,,INR18650-25R,,INR18650-25R,,,,auto
+samsung-inr18650-25r,battery_category,,,,,,,,,auto
+samsung-inr18650-25r,chemistry,NCA,,NCA,,NCA,,,,auto
+samsung-inr18650-25r,weight,43.8,g,45.0,g,43.8,g,,disagree,
+samsung-inr18650-25r,rated_capacity,"2,500",mAh,"2,500",mAh,"2,500",mAh,,,auto
+samsung-inr18650-25r,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+samsung-inr18650-25r,min_voltage,2.5,V,2.5,V,2.5,V,,,auto
+samsung-inr18650-25r,max_voltage,4.2,V,4.2,V,4.2,V,,,auto
+samsung-inr18650-25r,max_discharge_current,20,A,20,A,20,A,,audit,
+samsung-inr18650-25r,internal_resistance,13.20 ± 2,mΩ,18,mΩ,13.20 ± 2,mΩ,,disagree,
+samsung-inr18650-25r,expected_lifetime_cycles,,,,,,,,,auto
+samsung-inr18650-25r,capacity_threshold_pct,,,,,,,,,auto
+samsung-inr18650-25r,operating_temp_min,,,,,,,,,auto
+samsung-inr18650-25r,operating_temp_max,,,,,,,,,auto
+samsung-inr18650-25r,hazardous_substances,,,,,,,,audit,
+samsung-inr18650-25r,dismantling_info,,,,,,,,,auto
+samsung-inr18650-25r,extinguishing_agent,,,,,,,,,auto
+samsung-inr18650-25r,un38_3_test,,,,,,,,,auto
+samsung-inr18650-25r,eu_declaration_ref,,,,,,,,,auto
+samsung-inr18650-29e,manufacturer,"Samsung SDI Co., Ltd.",,"Samsung SDI Co., Ltd.",,"Samsung SDI Co., Ltd.",,,,auto
+samsung-inr18650-29e,model_identifier,INR18650-29E,,INR18650-29E,,INR18650-29E,,,,auto
+samsung-inr18650-29e,battery_category,,,,,,,,,auto
+samsung-inr18650-29e,chemistry,,,,,,,,audit,
+samsung-inr18650-29e,weight,48,g,48,g,48,g,,,auto
+samsung-inr18650-29e,rated_capacity,"2,850",mAh,"2,850",mAh,"2,850",mAh,,audit,
+samsung-inr18650-29e,nominal_voltage,3.65,V,3.65,V,3.65,V,,audit,
+samsung-inr18650-29e,min_voltage,2.50,V,2.50,V,2.50,V,,,auto
+samsung-inr18650-29e,max_voltage,4.20 ± 0.05,V,4.20,V,4.20 ± 0.05,V,,,auto
+samsung-inr18650-29e,max_discharge_current,"2,750",mAh,"2,750",mAh,"2,750",mAh,,,auto
+samsung-inr18650-29e,internal_resistance,45,mΩ,45,m(cid:735),45,mΩ,,disagree,
+samsung-inr18650-29e,expected_lifetime_cycles,500,cycles,500,cycles,500,cycles,,audit,
+samsung-inr18650-29e,capacity_threshold_pct,80,%,80,%,80,%,,,auto
+samsung-inr18650-29e,operating_temp_min,-20,°C,-20,°C,-20,°C,,,auto
+samsung-inr18650-29e,operating_temp_max,60,°C,60,°C,60,°C,,,auto
+samsung-inr18650-29e,hazardous_substances,"no environmentally hazardous component, such as lead or cadmium",,"no environmentally hazardous component, such as lead or cadmium",,"no environmentally hazardous component, such as lead or cadmium",,,,auto
+samsung-inr18650-29e,dismantling_info,The cell should not be dismantled from the battery pack.,,The cell should not be dismantled from the battery pack.,,The cell should not be dismantled from the battery pack.,,,,auto
+samsung-inr18650-29e,extinguishing_agent,,,,,,,,,auto
+samsung-inr18650-29e,un38_3_test,,,,,,,,audit,
+samsung-inr18650-29e,eu_declaration_ref,,,,,,,,,auto
+samsung-inr18650-30q,manufacturer,"Samsung SDI Co., Ltd.",,"Samsung SDI Co., Ltd.",,"Samsung SDI Co., Ltd.",,,,auto
+samsung-inr18650-30q,model_identifier,INR18650-30Q,,INR18650-30Q,,INR18650-30Q,,,,auto
+samsung-inr18650-30q,battery_category,,,,,,,,,auto
+samsung-inr18650-30q,chemistry,,,,,,,,,auto
+samsung-inr18650-30q,weight,48.0,g,48.0,g,48.0,g,,,auto
+samsung-inr18650-30q,rated_capacity,"3,000",mAh,"3,000",mAh,"3,000",mAh,,audit,
+samsung-inr18650-30q,nominal_voltage,3.6,V,3.6,V,3.6,V,,audit,
+samsung-inr18650-30q,min_voltage,2.5,V,2.5,V,2.5,V,,,auto
+samsung-inr18650-30q,max_voltage,4.20,V,4.20,V,4.20,V,,,auto
+samsung-inr18650-30q,max_discharge_current,15,A,15,A,15,A,,,auto
+samsung-inr18650-30q,internal_resistance,26,mΩ,26,mΩ,26,mΩ,,,auto
+samsung-inr18650-30q,expected_lifetime_cycles,250,cycles,250,cycles,250,cycles,,,auto
+samsung-inr18650-30q,capacity_threshold_pct,60,%,60,%,60,%,,,auto
+samsung-inr18650-30q,operating_temp_min,-20,℃,-20,℃,-20,℃,,,auto
+samsung-inr18650-30q,operating_temp_max,75,℃,75,℃,75,℃,,,auto
+samsung-inr18650-30q,hazardous_substances,,,"contains no environmentally hazardous component, such as lead or cadmium",,,,,disagree,
+samsung-inr18650-30q,dismantling_info,The cell should not be dismantled from the battery pack.,,,,The cell should not be dismantled from the battery pack.,,,disagree,
+samsung-inr18650-30q,extinguishing_agent,,,,,,,,,auto
+samsung-inr18650-30q,un38_3_test,,,,,,,,,auto
+samsung-inr18650-30q,eu_declaration_ref,,,,,,,,,auto
+samsung-inr18650-35e,manufacturer,"Samsung SDI Co., Ltd.",,"Samsung SDI Co., Ltd.",,"Samsung SDI Co., Ltd.",,,,auto
+samsung-inr18650-35e,model_identifier,INR18650-35E,,INR18650-35E,,INR18650-35E,,,,auto
+samsung-inr18650-35e,battery_category,,,,,,,,,auto
+samsung-inr18650-35e,chemistry,,,,,,,,,auto
+samsung-inr18650-35e,weight,50,g,50,g,50,g,,,auto
+samsung-inr18650-35e,rated_capacity,,,"3,250",mAh,,,,disagree,
+samsung-inr18650-35e,nominal_voltage,3.60,V,3.60,V,3.60,V,,audit,
+samsung-inr18650-35e,min_voltage,2.65,V,2.65,V,2.65,V,,,auto
+samsung-inr18650-35e,max_voltage,4.2,V,4.2,V,4.2,V,,,auto
+samsung-inr18650-35e,max_discharge_current,"8,000",mA,"8,000",mA,"8,000",mA,,,auto
+samsung-inr18650-35e,internal_resistance,35,mΩ,35,mΩ,35,mΩ,,,auto
+samsung-inr18650-35e,expected_lifetime_cycles,500,cycles,500,cycles,500,cycles,,,auto
+samsung-inr18650-35e,capacity_threshold_pct,60,%,60,%,60,%,,,auto
+samsung-inr18650-35e,operating_temp_min,-10,°C,-10,°C,-10,°C,,,auto
+samsung-inr18650-35e,operating_temp_max,60,°C,60,°C,60,°C,,,auto
+samsung-inr18650-35e,hazardous_substances,"the cell contains no environmentally hazardous component, such as lead or cadmium",,"no environmentally hazardous component, such as lead or cadmium",,"the cell contains no environmentally hazardous component, such as lead or cadmium",,,,auto
+samsung-inr18650-35e,dismantling_info,The cell should not be dismantled from the battery pack.,,,,The cell should not be dismantled from the battery pack.,,,disagree,
+samsung-inr18650-35e,extinguishing_agent,,,,,,,,,auto
+samsung-inr18650-35e,un38_3_test,,,,,,,,,auto
+samsung-inr18650-35e,eu_declaration_ref,,,,,,,,,auto
+samsung-inr21700-40t,manufacturer,"Samsung SDI Co., Ltd.",,"Samsung SDI Co., Ltd.",,"Samsung SDI Co., Ltd.",,,,auto
+samsung-inr21700-40t,model_identifier,INR21700-40T,,INR21700-40T,,INR21700-40T,,,,auto
+samsung-inr21700-40t,battery_category,,,,,,,,,auto
+samsung-inr21700-40t,chemistry,,,,,,,,,auto
+samsung-inr21700-40t,weight,70.0,g,70.0,g,70.0,g,,,auto
+samsung-inr21700-40t,rated_capacity,"3,900",mAh,"3,900",mAh,"3,900",mAh,,,auto
+samsung-inr21700-40t,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+samsung-inr21700-40t,min_voltage,2.5,V,2.5,V,2.5,V,,,auto
+samsung-inr21700-40t,max_voltage,4.20,V,4.2,V,4.20,V,,,auto
+samsung-inr21700-40t,max_discharge_current,35,A,35,A,35,A,,,auto
+samsung-inr21700-40t,internal_resistance,12,mΩ,12,mΩ,12,mΩ,,,auto
+samsung-inr21700-40t,expected_lifetime_cycles,250,cycles,250,cycles,250,cycles,,,auto
+samsung-inr21700-40t,capacity_threshold_pct,60,%,60,%,60,%,,,auto
+samsung-inr21700-40t,operating_temp_min,-20,℃,-20,℃,-20,℃,,,auto
+samsung-inr21700-40t,operating_temp_max,60,℃,60,℃,60,℃,,,auto
+samsung-inr21700-40t,hazardous_substances,"no environmentally hazardous component, such as lead or cadmium",,"no environmentally hazardous component, such as lead or cadmium",,"no environmentally hazardous component, such as lead or cadmium",,,,auto
+samsung-inr21700-40t,dismantling_info,The cell should not be dismantled from the battery pack.,,,,The cell should not be dismantled from the battery pack.,,,disagree,
+samsung-inr21700-40t,extinguishing_agent,,,,,,,,,auto
+samsung-inr21700-40t,un38_3_test,,,,,,,,,auto
+samsung-inr21700-40t,eu_declaration_ref,,,,,,,,audit,
+samsung-inr21700-50e,manufacturer,,,,,,,y,blind,
+samsung-inr21700-50e,model_identifier,,,,,,,y,blind,
+samsung-inr21700-50e,battery_category,,,,,,,y,blind,
+samsung-inr21700-50e,chemistry,,,,,,,y,blind,
+samsung-inr21700-50e,weight,,,,,,,y,blind,
+samsung-inr21700-50e,rated_capacity,,,,,,,y,blind,
+samsung-inr21700-50e,nominal_voltage,,,,,,,y,blind,
+samsung-inr21700-50e,min_voltage,,,,,,,y,blind,
+samsung-inr21700-50e,max_voltage,,,,,,,y,blind,
+samsung-inr21700-50e,max_discharge_current,,,,,,,y,blind,
+samsung-inr21700-50e,internal_resistance,,,,,,,y,blind,
+samsung-inr21700-50e,expected_lifetime_cycles,,,,,,,y,blind,
+samsung-inr21700-50e,capacity_threshold_pct,,,,,,,y,blind,
+samsung-inr21700-50e,operating_temp_min,,,,,,,y,blind,
+samsung-inr21700-50e,operating_temp_max,,,,,,,y,blind,
+samsung-inr21700-50e,hazardous_substances,,,,,,,y,blind,
+samsung-inr21700-50e,dismantling_info,,,,,,,y,blind,
+samsung-inr21700-50e,extinguishing_agent,,,,,,,y,blind,
+samsung-inr21700-50e,un38_3_test,,,,,,,y,blind,
+samsung-inr21700-50e,eu_declaration_ref,,,,,,,y,blind,
+sanyo-ncr20700b,manufacturer,"SANYO Electric Co., Ltd.",,"SANYO Electric Co., Ltd.",,"SANYO Electric Co., Ltd.",,,,auto
+sanyo-ncr20700b,model_identifier,NCR20700B,,NCR20700B,,NCR20700B,,,,auto
+sanyo-ncr20700b,battery_category,,,,,,,,audit,
+sanyo-ncr20700b,chemistry,,,,,,,,,auto
+sanyo-ncr20700b,weight,63.0,g,63.0,g,63.0,g,,,auto
+sanyo-ncr20700b,rated_capacity,4000,mAh,4000,mAh,4000,mAh,,audit,
+sanyo-ncr20700b,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+sanyo-ncr20700b,min_voltage,2.5,V,,,2.5,V,,disagree,
+sanyo-ncr20700b,max_voltage,4.20,V,4.20,V,4.20,V,,,auto
+sanyo-ncr20700b,max_discharge_current,,,,,,,,,auto
+sanyo-ncr20700b,internal_resistance,,,,,,,,,auto
+sanyo-ncr20700b,expected_lifetime_cycles,,,,,,,,,auto
+sanyo-ncr20700b,capacity_threshold_pct,,,,,,,,,auto
+sanyo-ncr20700b,operating_temp_min,-20,°C,-20,°C,-20,°C,,,auto
+sanyo-ncr20700b,operating_temp_max,60,°C,+60,°C,60,°C,,,auto
+sanyo-ncr20700b,hazardous_substances,,,,,,,,,auto
+sanyo-ncr20700b,dismantling_info,,,,,,,,,auto
+sanyo-ncr20700b,extinguishing_agent,,,,,,,,,auto
+sanyo-ncr20700b,un38_3_test,,,,,,,,audit,
+sanyo-ncr20700b,eu_declaration_ref,,,,,,,,,auto
+sony-us18650vtc5a,manufacturer,Sony Energy Devices Corporation,,Sony Energy Devices Corporation,,Sony Energy Devices Corporation,,,,auto
+sony-us18650vtc5a,model_identifier,US18650VTC5A,,US18650VTC5A,,US18650VTC5A,,,,auto
+sony-us18650vtc5a,battery_category,,,,,,,,audit,
+sony-us18650vtc5a,chemistry,,,,,,,,,auto
+sony-us18650vtc5a,weight,47.1,g,47.1+/-1.5,g,47.1,g,,,auto
+sony-us18650vtc5a,rated_capacity,2500,mAh,2500,mAh,2500,mAh,,,auto
+sony-us18650vtc5a,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+sony-us18650vtc5a,min_voltage,2.0,V,2.0,V,2.0,V,,,auto
+sony-us18650vtc5a,max_voltage,4.25,V,4.25,V,4.25,V,,,auto
+sony-us18650vtc5a,max_discharge_current,35.0,A,35.0,A,35.0,A,,,auto
+sony-us18650vtc5a,internal_resistance,AC 7～15,mΩ,7mΩ～15mΩ,mΩ,AC 7～15,mΩ,,,auto
+sony-us18650vtc5a,expected_lifetime_cycles,500,cycles,500,cycles,500,cycles,,,auto
+sony-us18650vtc5a,capacity_threshold_pct,,,,,,,,audit,
+sony-us18650vtc5a,operating_temp_min,-20,°C,-20,℃,-20,°C,,,auto
+sony-us18650vtc5a,operating_temp_max,60,°C,+60,℃,60,°C,,,auto
+sony-us18650vtc5a,hazardous_substances,,,,,,,,,auto
+sony-us18650vtc5a,dismantling_info,,,,,,,,,auto
+sony-us18650vtc5a,extinguishing_agent,,,,,,,,,auto
+sony-us18650vtc5a,un38_3_test,,,,,,,,,auto
+sony-us18650vtc5a,eu_declaration_ref,,,,,,,,,auto
+sony-us18650vtc6,manufacturer,Sony Energy Devices Corporation,,Sony Energy Devices Corporation,,Sony Energy Devices Corporation,,,,auto
+sony-us18650vtc6,model_identifier,US18650VTC6,,US18650VTC6,,US18650VTC6,,,,auto
+sony-us18650vtc6,battery_category,,,,,,,,,auto
+sony-us18650vtc6,chemistry,,,,,,,,,auto
+sony-us18650vtc6,weight,46.6,g,46.6,g,46.6,g,,,auto
+sony-us18650vtc6,rated_capacity,3000,mAh,3000,mAh,3000,mAh,,,auto
+sony-us18650vtc6,nominal_voltage,3.6,V,3.6,V,3.6,V,,,auto
+sony-us18650vtc6,min_voltage,2.0,V,2.0,V,2.0,V,,,auto
+sony-us18650vtc6,max_voltage,4.25,V,4.25,V,4.25,V,,,auto
+sony-us18650vtc6,max_discharge_current,30,A,15,A,30,A,,disagree,
+sony-us18650vtc6,internal_resistance,8～18,mΩ,8mΩ～18mΩ,mΩ,8～18,mΩ,,audit,
+sony-us18650vtc6,expected_lifetime_cycles,300,cycles,300,cycles,300,cycles,,,auto
+sony-us18650vtc6,capacity_threshold_pct,,,,,,,,,auto
+sony-us18650vtc6,operating_temp_min,-20,℃,-20,℃,-20,℃,,,auto
+sony-us18650vtc6,operating_temp_max,60,℃,+60,℃,60,℃,,,auto
+sony-us18650vtc6,hazardous_substances,,,,,,,,,auto
+sony-us18650vtc6,dismantling_info,,,,,,,,audit,
+sony-us18650vtc6,extinguishing_agent,,,,,,,,,auto
+sony-us18650vtc6,un38_3_test,,,,,,,,,auto
+sony-us18650vtc6,eu_declaration_ref,,,,,,,,,auto
+sony-us21700vtc6a,manufacturer,"Murata Manufacturing Co., Ltd.",,"Murata Manufacturing Co., Ltd.",,"Murata Manufacturing Co., Ltd.",,,,auto
+sony-us21700vtc6a,model_identifier,US21700VTC6A,,US21700VTC6A,,US21700VTC6A,,,,auto
+sony-us21700vtc6a,battery_category,,,,,,,,,auto
+sony-us21700vtc6a,chemistry,,,,,,,,,auto
+sony-us21700vtc6a,weight,,,,,,,,,auto
+sony-us21700vtc6a,rated_capacity,4000,mAh,4000,mAh,4000,mAh,,,auto
+sony-us21700vtc6a,nominal_voltage,3.6,V,3.6,V,3.6,V,,audit,
+sony-us21700vtc6a,min_voltage,2.0,V,2.0,V,2.0,V,,,auto
+sony-us21700vtc6a,max_voltage,4.25,V,4.20,V,4.25,V,,disagree,
+sony-us21700vtc6a,max_discharge_current,40,A,40,A,40,A,,,auto
+sony-us21700vtc6a,internal_resistance,"5～15 (AC Impedance, 1kHz)",mΩ,5mΩ～15mΩ,mΩ,"5～15 (AC Impedance, 1kHz)",mΩ,,,auto
+sony-us21700vtc6a,expected_lifetime_cycles,,,,,,,,,auto
+sony-us21700vtc6a,capacity_threshold_pct,,,,,,,,,auto
+sony-us21700vtc6a,operating_temp_min,-20,deg.C,-20,deg.C,-20,deg.C,,audit,
+sony-us21700vtc6a,operating_temp_max,60,deg.C,+60,deg.C,60,deg.C,,,auto
+sony-us21700vtc6a,hazardous_substances,,,,,,,,audit,
+sony-us21700vtc6a,dismantling_info,,,,,,,,,auto
+sony-us21700vtc6a,extinguishing_agent,,,,,,,,,auto
+sony-us21700vtc6a,un38_3_test,,,,,,,,,auto
+sony-us21700vtc6a,eu_declaration_ref,,,,,,,,,auto

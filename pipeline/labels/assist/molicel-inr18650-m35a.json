@@ -1,0 +1,85 @@
+{
+  "model": "claude-sonnet-5-5",
+  "fields": {
+    "manufacturer": {
+      "value": "E-One Moli Energy Corp.",
+      "unit": ""
+    },
+    "model_identifier": {
+      "value": "INR-18650-M35A",
+      "unit": ""
+    },
+    "battery_category": {
+      "value": "",
+      "unit": ""
+    },
+    "chemistry": {
+      "value": "",
+      "unit": ""
+    },
+    "weight": {
+      "value": "48.0 (Max)",
+      "unit": "g"
+    },
+    "rated_capacity": {
+      "value": "3.45",
+      "unit": "Ah"
+    },
+    "nominal_voltage": {
+      "value": "3.6",
+      "unit": "V"
+    },
+    "min_voltage": {
+      "value": "2.5",
+      "unit": "V"
+    },
+    "max_voltage": {
+      "value": "4.20",
+      "unit": "V"
+    },
+    "max_discharge_current": {
+      "value": "10",
+      "unit": "A"
+    },
+    "internal_resistance": {
+      "value": "≤ 35",
+      "unit": "mΩ"
+    },
+    "expected_lifetime_cycles": {
+      "value": "500",
+      "unit": "cycles"
+    },
+    "capacity_threshold_pct": {
+      "value": "70",
+      "unit": "%"
+    },
+    "operating_temp_min": {
+      "value": "-40",
+      "unit": "°C"
+    },
+    "operating_temp_max": {
+      "value": "60",
+      "unit": "°C"
+    },
+    "hazardous_substances": {
+      "value": "",
+      "unit": ""
+    },
+    "dismantling_info": {
+      "value": "",
+      "unit": ""
+    },
+    "extinguishing_agent": {
+      "value": "",
+      "unit": ""
+    },
+    "un38_3_test": {
+      "value": "Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria",
+      "unit": ""
+    },
+    "eu_declaration_ref": {
+      "value": "",
+      "unit": ""
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "model": "claude-sonnet-5-5",
+  "fields": {
+    "manufacturer": {
+      "value": "Samsung SDI Co., Ltd.",
+      "unit": ""
+    },
+    "model_identifier": {
+      "value": "INR21700-40T",
+      "unit": ""
+    },
+    "battery_category": {
+      "value": "",
+      "unit": ""
+    },
+    "chemistry": {
+      "value": "",
+      "unit": ""
+    },
+    "weight": {
+      "value": "70.0",
+      "unit": "g"
+    },
+    "rated_capacity": {
+      "value": "3,900",
+      "unit": "mAh"
+    },
+    "nominal_voltage": {
+      "value": "3.6",
+      "unit": "V"
+    },
+    "min_voltage": {
+      "value": "2.5",
+      "unit": "V"
+    },
+    "max_voltage": {
+      "value": "4.20",
+      "unit": "V"
+    },
+    "max_discharge_current": {
+      "value": "35",
+      "unit": "A"
+    },
+    "internal_resistance": {
+      "value": "12",
+      "unit": "mΩ"
+    },
+    "expected_lifetime_cycles": {
+      "value": "250",
+      "unit": "cycles"
+    },
+    "capacity_threshold_pct": {
+      "value": "60",
+      "unit": "%"
+    },
+    "operating_temp_min": {
+      "value": "-20",
+      "unit": "℃"
+    },
+    "operating_temp_max": {
+      "value": "60",
+      "unit": "℃"
+    },
+    "hazardous_substances": {
+      "value": "no environmentally hazardous component, such as lead or cadmium",
+      "unit": ""
+    },
+    "dismantling_info": {
+      "value": "The cell should not be dismantled from the battery pack.",
+      "unit": ""
+    },
+    "extinguishing_agent": {
+      "value": "",
+      "unit": ""
+    },
+    "un38_3_test": {
+      "value": "",
+      "unit": ""
+    },
+    "eu_declaration_ref": {
+      "value": "",
+      "unit": ""
+    }
+  }
+}

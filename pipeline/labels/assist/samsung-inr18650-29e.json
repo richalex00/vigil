@@ -1,0 +1,85 @@
+{
+  "model": "claude-sonnet-5-5",
+  "fields": {
+    "manufacturer": {
+      "value": "Samsung SDI Co., Ltd.",
+      "unit": ""
+    },
+    "model_identifier": {
+      "value": "INR18650-29E",
+      "unit": ""
+    },
+    "battery_category": {
+      "value": "",
+      "unit": ""
+    },
+    "chemistry": {
+      "value": "",
+      "unit": ""
+    },
+    "weight": {
+      "value": "48",
+      "unit": "g"
+    },
+    "rated_capacity": {
+      "value": "2,850",
+      "unit": "mAh"
+    },
+    "nominal_voltage": {
+      "value": "3.65",
+      "unit": "V"
+    },
+    "min_voltage": {
+      "value": "2.50",
+      "unit": "V"
+    },
+    "max_voltage": {
+      "value": "4.20 ± 0.05",
+      "unit": "V"
+    },
+    "max_discharge_current": {
+      "value": "2,750",
+      "unit": "mAh"
+    },
+    "internal_resistance": {
+      "value": "45",
+      "unit": "mΩ"
+    },
+    "expected_lifetime_cycles": {
+      "value": "500",
+      "unit": "cycles"
+    },
+    "capacity_threshold_pct": {
+      "value": "80",
+      "unit": "%"
+    },
+    "operating_temp_min": {
+      "value": "-20",
+      "unit": "°C"
+    },
+    "operating_temp_max": {
+      "value": "60",
+      "unit": "°C"
+    },
+    "hazardous_substances": {
+      "value": "no environmentally hazardous component, such as lead or cadmium",
+      "unit": ""
+    },
+    "dismantling_info": {
+      "value": "The cell should not be dismantled from the battery pack.",
+      "unit": ""
+    },
+    "extinguishing_agent": {
+      "value": "",
+      "unit": ""
+    },
+    "un38_3_test": {
+      "value": "",
+      "unit": ""
+    },
+    "eu_declaration_ref": {
+      "value": "",
+      "unit": ""
+    }
+  }
+}

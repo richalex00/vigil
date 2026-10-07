@@ -1,0 +1,85 @@
+{
+  "model": "claude-sonnet-5-5",
+  "fields": {
+    "manufacturer": {
+      "value": "SANYO Electric Co., Ltd.",
+      "unit": ""
+    },
+    "model_identifier": {
+      "value": "NCR20700B",
+      "unit": ""
+    },
+    "battery_category": {
+      "value": "",
+      "unit": ""
+    },
+    "chemistry": {
+      "value": "",
+      "unit": ""
+    },
+    "weight": {
+      "value": "63.0",
+      "unit": "g"
+    },
+    "rated_capacity": {
+      "value": "4000",
+      "unit": "mAh"
+    },
+    "nominal_voltage": {
+      "value": "3.6",
+      "unit": "V"
+    },
+    "min_voltage": {
+      "value": "2.5",
+      "unit": "V"
+    },
+    "max_voltage": {
+      "value": "4.20",
+      "unit": "V"
+    },
+    "max_discharge_current": {
+      "value": "",
+      "unit": ""
+    },
+    "internal_resistance": {
+      "value": "",
+      "unit": ""
+    },
+    "expected_lifetime_cycles": {
+      "value": "",
+      "unit": ""
+    },
+    "capacity_threshold_pct": {
+      "value": "",
+      "unit": ""
+    },
+    "operating_temp_min": {
+      "value": "-20",
+      "unit": "°C"
+    },
+    "operating_temp_max": {
+      "value": "60",
+      "unit": "°C"
+    },
+    "hazardous_substances": {
+      "value": "",
+      "unit": ""
+    },
+    "dismantling_info": {
+      "value": "",
+      "unit": ""
+    },
+    "extinguishing_agent": {
+      "value": "",
+      "unit": ""
+    },
+    "un38_3_test": {
+      "value": "",
+      "unit": ""
+    },
+    "eu_declaration_ref": {
+      "value": "",
+      "unit": ""
+    }
+  }
+}

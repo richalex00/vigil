@@ -1,0 +1,85 @@
+{
+  "model": "claude-sonnet-5-5",
+  "fields": {
+    "manufacturer": {
+      "value": "ExpertPower",
+      "unit": ""
+    },
+    "model_identifier": {
+      "value": "LC32230",
+      "unit": ""
+    },
+    "battery_category": {
+      "value": "",
+      "unit": ""
+    },
+    "chemistry": {
+      "value": "LiFePO4",
+      "unit": ""
+    },
+    "weight": {
+      "value": "4140",
+      "unit": "g"
+    },
+    "rated_capacity": {
+      "value": "230",
+      "unit": "Ah"
+    },
+    "nominal_voltage": {
+      "value": "3.2",
+      "unit": "V"
+    },
+    "min_voltage": {
+      "value": "2.5",
+      "unit": "V"
+    },
+    "max_voltage": {
+      "value": "3.65",
+      "unit": "V"
+    },
+    "max_discharge_current": {
+      "value": "1",
+      "unit": "C"
+    },
+    "internal_resistance": {
+      "value": "0.20",
+      "unit": "mΩ"
+    },
+    "expected_lifetime_cycles": {
+      "value": "4000",
+      "unit": "cycles"
+    },
+    "capacity_threshold_pct": {
+      "value": "80",
+      "unit": "%"
+    },
+    "operating_temp_min": {
+      "value": "-35",
+      "unit": "℃"
+    },
+    "operating_temp_max": {
+      "value": "65",
+      "unit": "℃"
+    },
+    "hazardous_substances": {
+      "value": "",
+      "unit": ""
+    },
+    "dismantling_info": {
+      "value": "Disassembling the product without written consent from ExpertPower is strictly prohibited",
+      "unit": ""
+    },
+    "extinguishing_agent": {
+      "value": "",
+      "unit": ""
+    },
+    "un38_3_test": {
+      "value": "",
+      "unit": ""
+    },
+    "eu_declaration_ref": {
+      "value": "",
+      "unit": ""
+    }
+  }
+}

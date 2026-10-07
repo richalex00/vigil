@@ -1,0 +1,85 @@
+{
+  "model": "claude-sonnet-5-5",
+  "fields": {
+    "manufacturer": {
+      "value": "EVE Power Co., Ltd.",
+      "unit": ""
+    },
+    "model_identifier": {
+      "value": "MB31",
+      "unit": ""
+    },
+    "battery_category": {
+      "value": "",
+      "unit": ""
+    },
+    "chemistry": {
+      "value": "LFP",
+      "unit": ""
+    },
+    "weight": {
+      "value": "5600",
+      "unit": "g"
+    },
+    "rated_capacity": {
+      "value": "314",
+      "unit": "Ah"
+    },
+    "nominal_voltage": {
+      "value": "3.2",
+      "unit": "V"
+    },
+    "min_voltage": {
+      "value": "2.5",
+      "unit": "V"
+    },
+    "max_voltage": {
+      "value": "3.65",
+      "unit": "V"
+    },
+    "max_discharge_current": {
+      "value": "",
+      "unit": ""
+    },
+    "internal_resistance": {
+      "value": "0.18",
+      "unit": "mΩ"
+    },
+    "expected_lifetime_cycles": {
+      "value": "8000",
+      "unit": "cycles"
+    },
+    "capacity_threshold_pct": {
+      "value": "70",
+      "unit": "%"
+    },
+    "operating_temp_min": {
+      "value": "-30",
+      "unit": "℃"
+    },
+    "operating_temp_max": {
+      "value": "60",
+      "unit": "℃"
+    },
+    "hazardous_substances": {
+      "value": "",
+      "unit": ""
+    },
+    "dismantling_info": {
+      "value": "",
+      "unit": ""
+    },
+    "extinguishing_agent": {
+      "value": "",
+      "unit": ""
+    },
+    "un38_3_test": {
+      "value": "",
+      "unit": ""
+    },
+    "eu_declaration_ref": {
+      "value": "",
+      "unit": ""
+    }
+  }
+}
