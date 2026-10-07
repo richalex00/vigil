@@ -1313,6 +1313,17 @@ git commit -m "feat(pipeline): run command with per-sheet error isolation and ra
 
 ### Task 7: Datasheets, dev tuning freeze, and labelling (Richard does the hands-on part)
 
+> **AMENDMENT (Wed 7 Oct 2026): model-assisted labelling. This overrides the steps below where they conflict (spec §5.3, revised).** The code for this is written when Task 7 is reached. The interfaces are fixed here:
+> - **New `vigil_pipeline/assist.py`:** the second labeller. `python -m vigil_pipeline.assist` labels every non-blind sheet into `labels/assist/<id>.json` (`{"model": ..., "fields": {field_id: {"value", "unit"}}}`). It uses a **different model from the extractor** (default `gemini-2.5-flash`, configurable with `VIGIL_ASSIST_MODEL`; if no Gemini key is available, fall back to a different Claude model and record it). Its prompt is built from `labels/GUIDE.md` alone, and it **never reads `out/`**.
+> - **`write_template(..., assist=None, audit_rate=0.15, seed=2026)`:** for non-blind rows, `value`/`unit` come from the assist labeller, and `prefill_value`/`prefill_unit` stay the extractor's output (so the edit rate keeps its meaning). It adds a column `queue`:
+>   - `disagree`: the assist and extractor values differ after number/unit normalisation (`parse_number` + `normalise_unit`, else `norm` string compare)
+>   - `audit`: a seeded random `audit_rate` share of the agreeing rows
+>   - `blind`: blind sheets
+>   - empty: anything else, written with `checked=auto`
+> - **`pick_blind` default becomes `k=3`.**
+> - **Richard checks every row whose `queue` is non-empty** against the PDF and types `y` in `checked`. When he changes an audit row, he types `y` and the edit is detected by comparing `value` against the assist value, which is stored in new columns `assist_value`/`assist_unit`.
+> - **Task 8 changes:** `load_labels` accepts `checked` ∈ {`y`, `auto`}. `Label` gains `checked` and `queue`. `eval.json` → `labels` gains `method: "model-assisted"`, the counts `human_checked`/`auto_accepted`/`audited`, and `audit_error_rate` (audited rows where Richard's value differs from the assist value ÷ audited rows, with a bootstrap CI). The headline metrics are unchanged. `blind_subset` is still reported, now from 3 sheets.
+
 **Files:**
 - Create: `pipeline/vigil_pipeline/labels.py`
 - Create: `pipeline/labels/GUIDE.md`
