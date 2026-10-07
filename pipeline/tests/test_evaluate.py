@@ -129,3 +129,46 @@ def test_evaluate_refuses_labels_without_output(tmp_path):
     write_labels(p, [("ghost", {}, False)])
     with pytest.raises(FileNotFoundError, match="ghost"):
         evaluate(tmp_path / "out", load_labels(p), {}, iters=10)
+
+
+ASSIST_HEADER = ("datasheet_id,field_id,value,unit,prefill_value,prefill_unit,"
+                 "assist_value,assist_unit,blind,queue,checked")
+
+
+def write_assisted(path, rows):
+    """rows: {field_id: (value, unit, assist_value, queue, checked)}; other fields auto-accepted empty."""
+    lines = [ASSIST_HEADER]
+    for f in SOURCE_FIELDS:
+        value, unit, assist, queue, checked = rows.get(f.id, ("", "", "", "", "auto"))
+        lines.append(f"a,{f.id},{value},{unit},,,{assist},{unit if assist else ''},,{queue},{checked}")
+    path.write_text("\n".join(lines) + "\n")
+
+
+def test_assisted_labels_report_method_counts_and_audit_error_rate(tmp_path):
+    out = tmp_path / "out"
+    write_sheet(out, "a", CHECKED_A, BASELINE_A)
+    p = tmp_path / "l.csv"
+    write_assisted(p, {
+        "weight": ("49.0", "g", "49.0", "", "auto"),
+        "nominal_voltage": ("3.635", "V", "3.7", "audit", "y"),   # Richard corrected the audit row
+        "rated_capacity": ("3500", "mAh", "3500", "audit", "y"),  # audit row unchanged
+        "model_identifier": ("MJ1", "", "", "disagree", "y"),
+    })
+    r = evaluate(out, load_labels(p), {"a": "test"}, iters=50)
+    lab = r["labels"]
+    assert lab["method"] == "model-assisted"
+    assert (lab["human_checked"], lab["auto_accepted"], lab["audited"]) == (3, 17, 2)
+    assert lab["audit_error_rate"] == 0.5 and lab["audit_error_ci95"] == [0.5, 0.5]
+
+
+def test_manual_labels_report_manual_method(tmp_path):
+    out, labels = _setup(tmp_path)
+    lab = evaluate(out, load_labels(labels), {"a": "test"}, iters=10)["labels"]
+    assert lab["method"] == "manual" and lab["audit_error_rate"] is None
+
+
+def test_load_labels_rejects_auto_on_a_queued_row(tmp_path):
+    p = tmp_path / "l.csv"
+    write_assisted(p, {"weight": ("49.0", "g", "50", "disagree", "auto")})
+    with pytest.raises(ValueError, match="not checked"):
+        load_labels(p)

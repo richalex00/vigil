@@ -27,6 +27,9 @@ class Label:
     unit: str
     prefill_value: str
     blind: bool
+    checked: str = "y"
+    queue: str = ""
+    assist_value: str = ""
 
 
 @dataclass
@@ -48,13 +51,15 @@ def load_labels(path) -> dict[str, dict[str, Label]]:
             ds, fid = row["datasheet_id"], row["field_id"]
             if fid not in FIELD_BY_ID:
                 raise ValueError(f"unknown field id '{fid}' in labels row {n}")
-            if row["checked"].strip().lower() != "y":
+            checked, queue = row["checked"].strip().lower(), (row.get("queue") or "").strip()
+            if not (checked == "y" or (checked == "auto" and not queue)):
                 raise ValueError(f"labels row {n} ({ds}/{fid}) not checked")
             if fid in labels[ds]:
                 raise ValueError(f"duplicate label {ds}/{fid} in row {n}")
             labels[ds][fid] = Label(row["value"].strip(), row["unit"].strip(),
                                     (row.get("prefill_value") or "").strip(),
-                                    (row.get("blind") or "").strip().lower() == "y")
+                                    (row.get("blind") or "").strip().lower() == "y",
+                                    checked, queue, (row.get("assist_value") or "").strip())
     return dict(labels)
 
 
@@ -163,6 +168,38 @@ def bootstrap_ci(recs: list[Rec], metric, iters: int, seed: int = 0):
     return [round(values[int(0.025 * (len(values) - 1))], 4), round(values[int(0.975 * (len(values) - 1))], 4)]
 
 
+def _audit_errors(labels) -> list[tuple[str, bool]]:
+    """(sheet, changed) for every audited row: did Richard change the agreed (assist) value?"""
+    return [(ds, lab.value != lab.assist_value) for ds, row in sorted(labels.items())
+            for lab in row.values() if lab.queue == "audit"]
+
+
+def _audit_ci(audits, iters: int, seed: int = 0):
+    by_sheet: dict[str, list[bool]] = defaultdict(list)
+    for ds, changed in audits:
+        by_sheet[ds].append(changed)
+    if not by_sheet:
+        return None
+    sheets, rng, values = sorted(by_sheet), random.Random(seed), []
+    for _ in range(iters):
+        sample = [c for s in (rng.choice(sheets) for _ in sheets) for c in by_sheet[s]]
+        values.append(sum(sample) / len(sample))
+    values.sort()
+    return [round(values[int(0.025 * (iters - 1))], 4), round(values[int(0.975 * (iters - 1))], 4)]
+
+
+def _label_stats(labels, iters: int) -> dict:
+    rows = [lab for row in labels.values() for lab in row.values()]
+    audits = _audit_errors(labels)
+    assisted = any(lab.checked == "auto" or lab.queue for lab in rows)
+    return {"method": "model-assisted" if assisted else "manual",
+            "human_checked": sum(lab.checked == "y" for lab in rows),
+            "auto_accepted": sum(lab.checked == "auto" for lab in rows),
+            "audited": len(audits),
+            "audit_error_rate": _ratio(sum(c for _, c in audits), len(audits)),
+            "audit_error_ci95": _audit_ci(audits, iters)}
+
+
 def evaluate(out_dir, labels: dict[str, dict[str, Label]], splits: dict[str, str], iters: int = 2000) -> dict:
     out_dir = Path(out_dir)
     unlabelled = sorted(set(output_ids(out_dir)) - set(labels))
@@ -216,7 +253,8 @@ def evaluate(out_dir, labels: dict[str, dict[str, Label]], splits: dict[str, str
             "checked": _checked(blind_recs),
         },
         "labels": {"edit_rate_vs_prefill": _ratio(sum(lab.value != lab.prefill_value for lab in prefilled), len(prefilled)),
-                   "blind_sheets": len({r.ds for r in recs if r.blind})},
+                   "blind_sheets": len({r.ds for r in recs if r.blind}),
+                   **_label_stats(labels, iters)},
         "cost": {f"{k}_per_sheet": mean(v) for k, v in sorted(costs.items())},
         "served_models": sorted(served),
         "missed_errors": [{"datasheet": r.ds, "field": r.field, "predicted": r.quote_pred,
