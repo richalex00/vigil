@@ -8,7 +8,7 @@ from vigil_pipeline.units import allowed_units, normalise_unit, numbers_in, pars
     ("A", ("A", 1.0)), ("mA", ("A", 0.001)), ("Wh", ("Wh", 1.0)), ("kWh", ("Wh", 1000.0)),
     ("mΩ", ("mΩ", 1.0)), ("mohm", ("mΩ", 1.0)), ("Ω", ("mΩ", 1000.0)), ("g", ("g", 1.0)),
     ("kg", ("g", 1000.0)), ("%", ("%", 1.0)), ("°C", ("°C", 1.0)), ("℃", ("°C", 1.0)),
-    ("degC", ("°C", 1.0)), ("cycles", ("cycles", 1.0)), (" m A h ", ("Ah", 0.001)),
+    ("degC", ("°C", 1.0)), ("oC", ("°C", 1.0)), ("deg.C", ("°C", 1.0)), ("cycles", ("cycles", 1.0)), (" m A h ", ("Ah", 0.001)),
 ])
 def test_normalise_unit(raw, expected):
     assert normalise_unit(raw) == expected

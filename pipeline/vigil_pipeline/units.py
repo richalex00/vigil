@@ -11,7 +11,8 @@ _UNITS: dict[str, tuple[str, float]] = {
     "ω": ("mΩ", 1000.0), "ohm": ("mΩ", 1000.0),
     "g": ("g", 1.0), "kg": ("g", 1000.0),
     "%": ("%", 1.0),
-    "°c": ("°C", 1.0), "c": ("°C", 1.0), "degc": ("°C", 1.0),
+    "°c": ("°C", 1.0), "c": ("°C", 1.0), "degc": ("°C", 1.0), "deg.c": ("°C", 1.0),
+    "oc": ("°C", 1.0),  # ASCII "oC", as some datasheets (e.g. Molicel) write degrees
     "cycles": ("cycles", 1.0), "cycle": ("cycles", 1.0), "cyc": ("cycles", 1.0),
 }
 
