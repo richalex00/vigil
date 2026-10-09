@@ -52,7 +52,7 @@ def load_labels(path) -> dict[str, dict[str, Label]]:
             if fid not in FIELD_BY_ID:
                 raise ValueError(f"unknown field id '{fid}' in labels row {n}")
             checked, queue = row["checked"].strip().lower(), (row.get("queue") or "").strip()
-            if not (checked == "y" or (checked == "auto" and not queue)):
+            if not (checked in ("y", "claude") or (checked == "auto" and not queue)):
                 raise ValueError(f"labels row {n} ({ds}/{fid}) not checked")
             if fid in labels[ds]:
                 raise ValueError(f"duplicate label {ds}/{fid} in row {n}")
@@ -192,8 +192,11 @@ def _label_stats(labels, iters: int) -> dict:
     rows = [lab for row in labels.values() for lab in row.values()]
     audits = _audit_errors(labels)
     assisted = any(lab.checked == "auto" or lab.queue for lab in rows)
-    return {"method": "model-assisted" if assisted else "manual",
+    adjudicated = sum(lab.checked == "claude" for lab in rows)
+    method = "model-assisted" if assisted else "manual"
+    return {"method": method + (", model-adjudicated" if adjudicated else ""),
             "human_checked": sum(lab.checked == "y" for lab in rows),
+            "model_adjudicated": adjudicated,
             "auto_accepted": sum(lab.checked == "auto" for lab in rows),
             "audited": len(audits),
             "audit_error_rate": _ratio(sum(c for _, c in audits), len(audits)),

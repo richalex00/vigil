@@ -172,3 +172,16 @@ def test_load_labels_rejects_auto_on_a_queued_row(tmp_path):
     write_assisted(p, {"weight": ("49.0", "g", "50", "disagree", "auto")})
     with pytest.raises(ValueError, match="not checked"):
         load_labels(p)
+
+
+def test_model_adjudicated_rows_are_accepted_and_reported(tmp_path):
+    out = tmp_path / "out"
+    write_sheet(out, "a", CHECKED_A, BASELINE_A)
+    p = tmp_path / "l.csv"
+    write_assisted(p, {
+        "nominal_voltage": ("3.635", "V", "3.7", "audit", "claude"),
+        "model_identifier": ("MJ1", "", "", "disagree", "y"),
+    })
+    lab = evaluate(out, load_labels(p), {"a": "test"}, iters=10)["labels"]
+    assert lab["method"] == "model-assisted, model-adjudicated"
+    assert (lab["human_checked"], lab["model_adjudicated"], lab["auto_accepted"]) == (1, 1, 18)

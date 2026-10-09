@@ -1,144 +1,144 @@
 datasheet_id,field_id,value,unit,prefill_value,prefill_unit,assist_value,assist_unit,blind,queue,checked,claude_note
-danenergy-softpack-10s4p,manufacturer,Dan-Tech Energy GmbH,,,,,,y,blind,,p2 L31
-danenergy-softpack-10s4p,model_identifier,TN10S2P-50-01,,,,,,y,blind,,p2 L2 first model
-danenergy-softpack-10s4p,battery_category,,,,,,,y,blind,,not stated in the document
-danenergy-softpack-10s4p,chemistry,,,,,,,y,blind,,not stated in the document
-danenergy-softpack-10s4p,weight,1.6,kg,,,,,y,blind,,p2 L18 first column
-danenergy-softpack-10s4p,rated_capacity,10,Ah,,,,,y,blind,,p2 L6 first column
-danenergy-softpack-10s4p,nominal_voltage,36,V,,,,,y,blind,,p2 L5
-danenergy-softpack-10s4p,min_voltage,30,V,,,,,y,blind,,p2 L9 cut-off
-danenergy-softpack-10s4p,max_voltage,42,V,,,,,y,blind,,p2 L8 charge voltage
-danenergy-softpack-10s4p,max_discharge_current,60,A,,,,,y,blind,,p2 L11 first column
-danenergy-softpack-10s4p,internal_resistance,,,,,,,y,blind,,not stated in the document
-danenergy-softpack-10s4p,expected_lifetime_cycles,"1,000",cycles,,,,,y,blind,,p2 L21 (at 80% DoD)
-danenergy-softpack-10s4p,capacity_threshold_pct,,,,,,,y,blind,,not stated in the document
-danenergy-softpack-10s4p,operating_temp_min,-20,°C,,,,,y,blind,,p2 L23 discharge –20°C
-danenergy-softpack-10s4p,operating_temp_max,60,°C,,,,,y,blind,,p2 L23
-danenergy-softpack-10s4p,hazardous_substances,,,,,,,y,blind,,not stated in the document
-danenergy-softpack-10s4p,dismantling_info,,,,,,,y,blind,,not stated in the document
-danenergy-softpack-10s4p,extinguishing_agent,,,,,,,y,blind,,not stated in the document
-danenergy-softpack-10s4p,un38_3_test,UN 38.3,,,,,,y,blind,,"p2 L23 'Designed to Meet CE, UN 38.3, RoHS, IEC 62133'"
-danenergy-softpack-10s4p,eu_declaration_ref,,,,,,,y,blind,,not stated in the document
-pylontech-us-series,manufacturer,Pylontech,,,,,,y,blind,,p1 L2 brand (document is from distributor Bornay)
-pylontech-us-series,model_identifier,UP2500,,,,,,y,blind,,p2 L2 first column
-pylontech-us-series,battery_category,,,,,,,y,blind,,not stated in the document
-pylontech-us-series,chemistry,LiFePO4,,,,,,y,blind,,p1 L5 'LiFePo4' (doubled text in PDF)
-pylontech-us-series,weight,27.5,kg,,,,,y,blind,,"p2 L26 '27,5 Kgr'"
-pylontech-us-series,rated_capacity,,,,,,,y,blind,,"capacity only given in Wh (2840 Wh), not Ah"
-pylontech-us-series,nominal_voltage,25.6,V,,,,,y,blind,,"p2 L4 '25,6 Vcc'"
-pylontech-us-series,min_voltage,23.0,V,,,,,y,blind,,"p2 L7 discharge voltage 23,0 - 28,8"
-pylontech-us-series,max_voltage,28.8,V,,,,,y,blind,,"p2 L8 charge voltage up to 28,8"
-pylontech-us-series,max_discharge_current,,,,,,,y,blind,,AMBIGUOUS: p2 L10 lists 3 values for 4 models; can't tell which is UP2500's
-pylontech-us-series,internal_resistance,,,,,,,y,blind,,not stated in the document
-pylontech-us-series,expected_lifetime_cycles,6000,cycles,,,,,y,blind,,p2 L22 '> 6000'
-pylontech-us-series,capacity_threshold_pct,,,,,,,y,blind,,not stated in the document
-pylontech-us-series,operating_temp_min,0,°C,,,,,y,blind,,p2 L17 working temperature 0 - 50 ºC
-pylontech-us-series,operating_temp_max,50,°C,,,,,y,blind,,p2 L17
-pylontech-us-series,hazardous_substances,,,,,,,y,blind,,not stated in the document
-pylontech-us-series,dismantling_info,,,,,,,y,blind,,not stated in the document
-pylontech-us-series,extinguishing_agent,,,,,,,y,blind,,not stated in the document
-pylontech-us-series,un38_3_test,UN38.3,,,,,,y,blind,,p2 L29
-pylontech-us-series,eu_declaration_ref,,,,,,,y,blind,,not stated in the document
-samsung-inr21700-50e,manufacturer,"Samsung SDI Co., Ltd.",,,,,,y,blind,,p1 L13
-samsung-inr21700-50e,model_identifier,INR21700-50E,,,,,,y,blind,,p1 L7
-samsung-inr21700-50e,battery_category,,,,,,,y,blind,,not stated in the document
-samsung-inr21700-50e,chemistry,,,,,,,y,blind,,not stated in the document
-samsung-inr21700-50e,weight,69,g,,,,,y,blind,,p2 L40 '69g max'
-samsung-inr21700-50e,rated_capacity,"4,900",mAh,,,,,y,blind,,"p2 L12 standard capacity Min 4,900mAh (only min given)"
-samsung-inr21700-50e,nominal_voltage,3.6,V,,,,,y,blind,,p2 L21
-samsung-inr21700-50e,min_voltage,2.5,V,,,,,y,blind,,p2 L29
-samsung-inr21700-50e,max_voltage,4.2,V,,,,,y,blind,,p2 L20
-samsung-inr21700-50e,max_discharge_current,"9,800",mA,,,,,y,blind,,p2 L26 continuous
-samsung-inr21700-50e,internal_resistance,,,,,,,y,blind,,not stated in the document
-samsung-inr21700-50e,expected_lifetime_cycles,500,cycles,,,,,y,blind,,p2 L30
-samsung-inr21700-50e,capacity_threshold_pct,80,%,,,,,y,blind,,p2 L31
-samsung-inr21700-50e,operating_temp_min,-20,°C,,,,,y,blind,,p3 L4 discharge
-samsung-inr21700-50e,operating_temp_max,60,°C,,,,,y,blind,,p3 L4
-samsung-inr21700-50e,hazardous_substances,,,,,,,y,blind,,not stated in the document
-samsung-inr21700-50e,dismantling_info,,,,,,,y,blind,,not stated in the document
-samsung-inr21700-50e,extinguishing_agent,,,,,,,y,blind,,not stated in the document
-samsung-inr21700-50e,un38_3_test,,,,,,,y,blind,,not stated in the document
-samsung-inr21700-50e,eu_declaration_ref,,,,,,,y,blind,,not stated in the document
-akkuman-ebv-bosch-15ah,model_identifier,EBV E-Bike Battery,,EBV E-BIKE BATTERY,,15 Ah / 540 Wh Downtube Battery,,,disagree,,p1 L3 product name 'EBV E-BIKE BATTERY'; '15 Ah / 540 Wh Downtube Battery' is the variant line
-akkuman-powerpack-yamaha,model_identifier,PowerPack for Yamaha 36 V,,"E-BIKE VISION POWERPACK, COMPATIBLE TO YAMAHA* PW SERIES WITH 36 V",,PowerPack for Yamaha 36 V,,,disagree,,p1 L9 footer 'Specification PowerPack for Yamaha 36 V' (concise product name)
-calb-lc32230,dismantling_info,,,,,Disassembling the product without written consent from ExpertPower is strictly prohibited,,,disagree,,"p21 L14 is a prohibition ('Disassembling ... strictly prohibited'), not dismantling info — rule: prohibitions don't count"
-molicel-inr18650-p26a,hazardous_substances,,,,,Comply with EU RoHS,,,disagree,,"p8 L21 'Comply with EU RoHS' is bare compliance, no substance content — rule: doesn't count"
-molicel-inr21700-p42a,rated_capacity,4.2,Ah,4.2,Ah,4.0,Ah,,disagree,,p3 L7 '4.2 Ah' is the nominal designation; p4 L11 '4.0Ah (Minimum)' is the minimum — guide: not minimum
-panasonic-ncr2070c,manufacturer,Panasonic Corporation,,Panasonic Corporation,,"SANYO Electric Co., Ltd.",,,disagree,,"AMBIGUOUS: p1 L2 'Panasonic Corporation', p1 L3 'SANYO Electric Co., Ltd.' (division). Took the first-named company"
-rs-lfp-14500,chemistry,LiFePO4,,LiFePO,,LiFePO4,,,disagree,,p1 L1 'Li-Ion (LiFePO )' + subscript '4' on L2
-rs-lfp-14500,min_voltage,2.0,V,2.0,V,2.75,V,,disagree,,p1 L18 'discharge end voltage: ≥ 2.0 V (recommended)'; 2.75V on L11 is a test condition
-rs-lfp-14500,operating_temp_min,-20,°C,- 20,°C,-20,°C,,disagree,,p1 L41 '- 20...60 °C discharge'
-samsung-inr18650-25r,weight,45.0,g,45.0,g,43.8,g,,disagree,,p3 L8 'Weight (g) Max. 45.0 43.8' — Spec column 45.0; 43.8 is the Typical column
-samsung-inr18650-25r,internal_resistance,18,mΩ,18,mΩ,13.20 ± 2,mΩ,,disagree,,p3 L9 'Initial IR (mΩ AC 1kHz) ≤ 18 13.20 ± 2' — Spec column ≤18
-samsung-inr18650-29e,internal_resistance,45,mΩ,45,m(cid:735),45,mΩ,,disagree,,p4 L34 'Initial internal impedance ≤ 45mΩ' (Ω garbled in PDF text)
-samsung-inr18650-30q,hazardous_substances,"contains no environmentally hazardous component, such as lead or cadmium",,"contains no environmentally hazardous component, such as lead or cadmium",,,,,disagree,,"p11 L39-40 — states substance content (none), so it counts"
-samsung-inr18650-30q,dismantling_info,,,,,The cell should not be dismantled from the battery pack.,,,disagree,,p11 L19 'should not be dismantled' is a prohibition — rule: doesn't count
-samsung-inr18650-35e,rated_capacity,"3,350",mAh,"3,250",mAh,,,,disagree,,"p3 L12/14 Standard discharge capacity Min 3,350mAh (only min values given; took the standard, not the 1C rated 3,250) — new rule"
-samsung-inr18650-35e,dismantling_info,,,,,The cell should not be dismantled from the battery pack.,,,disagree,,p12 L35 prohibition — rule: doesn't count
-samsung-inr21700-40t,dismantling_info,,,,,The cell should not be dismantled from the battery pack.,,,disagree,,p15 L11 prohibition — rule: doesn't count
-sanyo-ncr20700b,min_voltage,,,,,2.5,V,,disagree,,p2 spec table has no cut-off voltage; 2.5V only appears in test conditions (p3 L2)
-sony-us18650vtc6,max_discharge_current,30,A,15,A,30,A,,disagree,,"AMBIGUOUS: p4 L37 30A (with 80℃ temperature cut), L41 15A (without). Took the first-listed"
-sony-us21700vtc6a,max_voltage,4.20,V,4.20,V,4.25,V,,disagree,,"p5 L28 'Charging Voltage 4.20V'; 4.25V (p4 L21) is the absolute maximum, hint says charge (end) voltage"
-calb-lc32230,max_discharge_current,,,1,C,1,C,,fix,,"p12 L10 'Maximum continuous 1 C' — only a C-rate, never stated in A; 'never calculate' → empty"
-molicel-inr21700-m50a,internal_resistance,15,mΩ,15,mW,15,mW,,fix,,p1 L23 '15 mW' — PDF font renders Ω as W; value unchanged
-samsung-inr18650-29e,max_discharge_current,"2,750",mA,"2,750",mAh,"2,750",mAh,,fix,,"p3 L22 '2,750mAh (continuous discharge)' — datasheet typo for mA"
-a123-anr26650m1a,manufacturer,"A123Systems, Inc.",,"A123Systems, Inc.",,"A123Systems, Inc.",,,audit,,confirmed against the PDF
-a123-anr26650m1a,weight,70,g,70,grams,70,grams,,audit,,p1 L31 '70 grams' — unit written as g so the eval can convert
-a123-anr26650m1a,dismantling_info,,,,,,,,audit,,confirmed against the PDF
-akkuman-ebv-bosch-15ah,internal_resistance,,,,,,,,audit,,confirmed against the PDF
-akkuman-ebv-bosch-15ah,un38_3_test,,,,,,,,audit,,confirmed against the PDF
-akkuman-powerpack-yamaha,nominal_voltage,36,V,36,V,36,V,,audit,,confirmed against the PDF
-akkuman-powerpack-yamaha,extinguishing_agent,,,,,,,,audit,,confirmed against the PDF
-akkuman-powerpack-yamaha,eu_declaration_ref,,,,,,,,audit,,confirmed against the PDF
-calb-lc32230,manufacturer,ExpertPower,,ExpertPower,,ExpertPower,,,audit,,confirmed against the PDF
-calb-lc32230,chemistry,LiFePO4,,LiFePO4,,LiFePO4,,,audit,,confirmed against the PDF
-eve-lf314,nominal_voltage,3.2,V,3.2,V,3.2,V,,audit,,confirmed against the PDF
-molicel-inr18650-m35a,chemistry,,,,,,,,audit,,confirmed against the PDF
-molicel-inr18650-m35a,capacity_threshold_pct,70,%,70,%,70,%,,audit,,confirmed against the PDF
-molicel-inr18650-m35a,hazardous_substances,,,,,,,,audit,,confirmed against the PDF
-molicel-inr18650-m35a,eu_declaration_ref,,,,,,,,audit,,confirmed against the PDF
-molicel-inr18650-p26a,manufacturer,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,,audit,,confirmed against the PDF
-molicel-inr18650-p26a,chemistry,,,,,,,,audit,,confirmed against the PDF
-molicel-inr18650-p26a,eu_declaration_ref,,,,,,,,audit,,confirmed against the PDF
-molicel-inr20700a,rated_capacity,3.0,Ah,3.0,Ah,3.0,Ah,,audit,,confirmed against the PDF
-molicel-inr20700a,hazardous_substances,,,,,,,,audit,,confirmed against the PDF
-molicel-inr20700a,dismantling_info,,,,,,,,audit,,confirmed against the PDF
-molicel-inr20700a,un38_3_test,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,,audit,,confirmed against the PDF
-molicel-inr21700-m50a,battery_category,,,,,,,,audit,,confirmed against the PDF
-molicel-inr21700-m50a,min_voltage,2.5,V,2.5,V,2.5,V,,audit,,confirmed against the PDF
-molicel-inr21700-m50a,extinguishing_agent,,,,,,,,audit,,confirmed against the PDF
-molicel-inr21700-p42a,model_identifier,INR-21700-P42A,,INR-21700-P42A,,INR-21700-P42A,,,audit,,confirmed against the PDF
-molicel-inr21700-p42a,internal_resistance,≤ 15,mΩ,≤ 15,mΩ,≤ 15,mΩ,,audit,,confirmed against the PDF
-panasonic-ncr18650b,manufacturer,,,,,,,,audit,,confirmed against the PDF
-panasonic-ncr18650b,internal_resistance,,,,,,,,audit,,confirmed against the PDF
-panasonic-ncr18650bd,max_discharge_current,,,,,,,,audit,,confirmed against the PDF
-panasonic-ncr18650bd,extinguishing_agent,,,,,,,,audit,,confirmed against the PDF
-panasonic-ncr2070c,operating_temp_min,-20,°C,-20,°C,-20,°C,,audit,,confirmed against the PDF
-panasonic-ncr2070c,un38_3_test,,,,,,,,audit,,confirmed against the PDF
-panasonic-ncr2070c,eu_declaration_ref,,,,,,,,audit,,confirmed against the PDF
-rs-lfp-14500,manufacturer,ANSMANN,,ANSMANN,,ANSMANN,,,audit,,confirmed against the PDF
-rs-lfp-14500,model_identifier,1300-0021,,1300-0021,,1300-0021,,,audit,,confirmed against the PDF
-samsung-inr18650-25r,max_discharge_current,20,A,20,A,20,A,,audit,,confirmed against the PDF
-samsung-inr18650-25r,hazardous_substances,,,,,,,,audit,,confirmed against the PDF
-samsung-inr18650-29e,chemistry,,,,,,,,audit,,confirmed against the PDF
-samsung-inr18650-29e,rated_capacity,"2,850",mAh,"2,850",mAh,"2,850",mAh,,audit,,confirmed against the PDF
-samsung-inr18650-29e,nominal_voltage,3.65,V,3.65,V,3.65,V,,audit,,confirmed against the PDF
-samsung-inr18650-29e,expected_lifetime_cycles,500,cycles,500,cycles,500,cycles,,audit,,confirmed against the PDF
-samsung-inr18650-29e,un38_3_test,,,,,,,,audit,,confirmed against the PDF
-samsung-inr18650-30q,rated_capacity,"3,000",mAh,"3,000",mAh,"3,000",mAh,,audit,,confirmed against the PDF
-samsung-inr18650-30q,nominal_voltage,3.6,V,3.6,V,3.6,V,,audit,,confirmed against the PDF
-samsung-inr18650-35e,nominal_voltage,3.60,V,3.60,V,3.60,V,,audit,,confirmed against the PDF
-samsung-inr21700-40t,eu_declaration_ref,,,,,,,,audit,,confirmed against the PDF
-sanyo-ncr20700b,battery_category,,,,,,,,audit,,confirmed against the PDF
-sanyo-ncr20700b,rated_capacity,4000,mAh,4000,mAh,4000,mAh,,audit,,confirmed against the PDF
-sanyo-ncr20700b,un38_3_test,,,,,,,,audit,,confirmed against the PDF
-sony-us18650vtc5a,battery_category,,,,,,,,audit,,confirmed against the PDF
-sony-us18650vtc5a,capacity_threshold_pct,,,,,,,,audit,,confirmed against the PDF
-sony-us18650vtc6,internal_resistance,8～18,mΩ,8mΩ～18mΩ,mΩ,8～18,mΩ,,audit,,confirmed against the PDF
-sony-us18650vtc6,dismantling_info,,,,,,,,audit,,confirmed against the PDF
-sony-us21700vtc6a,nominal_voltage,3.6,V,3.6,V,3.6,V,,audit,,confirmed against the PDF
-sony-us21700vtc6a,operating_temp_min,-20,deg.C,-20,deg.C,-20,deg.C,,audit,,confirmed against the PDF
-sony-us21700vtc6a,hazardous_substances,,,,,,,,audit,,confirmed against the PDF
+danenergy-softpack-10s4p,manufacturer,Dan-Tech Energy GmbH,,,,,,y,blind,claude,p2 L31
+danenergy-softpack-10s4p,model_identifier,TN10S2P-50-01,,,,,,y,blind,claude,p2 L2 first model
+danenergy-softpack-10s4p,battery_category,,,,,,,y,blind,claude,not stated in the document
+danenergy-softpack-10s4p,chemistry,,,,,,,y,blind,claude,not stated in the document
+danenergy-softpack-10s4p,weight,1.6,kg,,,,,y,blind,claude,p2 L18 first column
+danenergy-softpack-10s4p,rated_capacity,10,Ah,,,,,y,blind,claude,p2 L6 first column
+danenergy-softpack-10s4p,nominal_voltage,36,V,,,,,y,blind,claude,p2 L5
+danenergy-softpack-10s4p,min_voltage,30,V,,,,,y,blind,claude,p2 L9 cut-off
+danenergy-softpack-10s4p,max_voltage,42,V,,,,,y,blind,claude,p2 L8 charge voltage
+danenergy-softpack-10s4p,max_discharge_current,60,A,,,,,y,blind,claude,p2 L11 first column
+danenergy-softpack-10s4p,internal_resistance,,,,,,,y,blind,claude,not stated in the document
+danenergy-softpack-10s4p,expected_lifetime_cycles,"1,000",cycles,,,,,y,blind,claude,p2 L21 (at 80% DoD)
+danenergy-softpack-10s4p,capacity_threshold_pct,,,,,,,y,blind,claude,not stated in the document
+danenergy-softpack-10s4p,operating_temp_min,-20,°C,,,,,y,blind,claude,p2 L23 discharge –20°C
+danenergy-softpack-10s4p,operating_temp_max,60,°C,,,,,y,blind,claude,p2 L23
+danenergy-softpack-10s4p,hazardous_substances,,,,,,,y,blind,claude,not stated in the document
+danenergy-softpack-10s4p,dismantling_info,,,,,,,y,blind,claude,not stated in the document
+danenergy-softpack-10s4p,extinguishing_agent,,,,,,,y,blind,claude,not stated in the document
+danenergy-softpack-10s4p,un38_3_test,UN 38.3,,,,,,y,blind,claude,"p2 L23 'Designed to Meet CE, UN 38.3, RoHS, IEC 62133'"
+danenergy-softpack-10s4p,eu_declaration_ref,,,,,,,y,blind,claude,not stated in the document
+pylontech-us-series,manufacturer,Pylontech,,,,,,y,blind,claude,p1 L2 brand (document is from distributor Bornay)
+pylontech-us-series,model_identifier,UP2500,,,,,,y,blind,claude,p2 L2 first column
+pylontech-us-series,battery_category,,,,,,,y,blind,claude,not stated in the document
+pylontech-us-series,chemistry,LiFePO4,,,,,,y,blind,claude,p1 L5 'LiFePo4' (doubled text in PDF)
+pylontech-us-series,weight,27.5,kg,,,,,y,blind,claude,"p2 L26 '27,5 Kgr'"
+pylontech-us-series,rated_capacity,,,,,,,y,blind,claude,"capacity only given in Wh (2840 Wh), not Ah"
+pylontech-us-series,nominal_voltage,25.6,V,,,,,y,blind,claude,"p2 L4 '25,6 Vcc'"
+pylontech-us-series,min_voltage,23.0,V,,,,,y,blind,claude,"p2 L7 discharge voltage 23,0 - 28,8"
+pylontech-us-series,max_voltage,28.8,V,,,,,y,blind,claude,"p2 L8 charge voltage up to 28,8"
+pylontech-us-series,max_discharge_current,,,,,,,y,blind,claude,AMBIGUOUS: p2 L10 lists 3 values for 4 models; can't tell which is UP2500's
+pylontech-us-series,internal_resistance,,,,,,,y,blind,claude,not stated in the document
+pylontech-us-series,expected_lifetime_cycles,6000,cycles,,,,,y,blind,claude,p2 L22 '> 6000'
+pylontech-us-series,capacity_threshold_pct,,,,,,,y,blind,claude,not stated in the document
+pylontech-us-series,operating_temp_min,0,°C,,,,,y,blind,claude,p2 L17 working temperature 0 - 50 ºC
+pylontech-us-series,operating_temp_max,50,°C,,,,,y,blind,claude,p2 L17
+pylontech-us-series,hazardous_substances,,,,,,,y,blind,claude,not stated in the document
+pylontech-us-series,dismantling_info,,,,,,,y,blind,claude,not stated in the document
+pylontech-us-series,extinguishing_agent,,,,,,,y,blind,claude,not stated in the document
+pylontech-us-series,un38_3_test,UN38.3,,,,,,y,blind,claude,p2 L29
+pylontech-us-series,eu_declaration_ref,,,,,,,y,blind,claude,not stated in the document
+samsung-inr21700-50e,manufacturer,"Samsung SDI Co., Ltd.",,,,,,y,blind,claude,p1 L13
+samsung-inr21700-50e,model_identifier,INR21700-50E,,,,,,y,blind,claude,p1 L7
+samsung-inr21700-50e,battery_category,,,,,,,y,blind,claude,not stated in the document
+samsung-inr21700-50e,chemistry,,,,,,,y,blind,claude,not stated in the document
+samsung-inr21700-50e,weight,69,g,,,,,y,blind,claude,p2 L40 '69g max'
+samsung-inr21700-50e,rated_capacity,"4,900",mAh,,,,,y,blind,claude,"p2 L12 standard capacity Min 4,900mAh (only min given)"
+samsung-inr21700-50e,nominal_voltage,3.6,V,,,,,y,blind,claude,p2 L21
+samsung-inr21700-50e,min_voltage,2.5,V,,,,,y,blind,claude,p2 L29
+samsung-inr21700-50e,max_voltage,4.2,V,,,,,y,blind,claude,p2 L20
+samsung-inr21700-50e,max_discharge_current,"9,800",mA,,,,,y,blind,claude,p2 L26 continuous
+samsung-inr21700-50e,internal_resistance,,,,,,,y,blind,claude,not stated in the document
+samsung-inr21700-50e,expected_lifetime_cycles,500,cycles,,,,,y,blind,claude,p2 L30
+samsung-inr21700-50e,capacity_threshold_pct,80,%,,,,,y,blind,claude,p2 L31
+samsung-inr21700-50e,operating_temp_min,-20,°C,,,,,y,blind,claude,p3 L4 discharge
+samsung-inr21700-50e,operating_temp_max,60,°C,,,,,y,blind,claude,p3 L4
+samsung-inr21700-50e,hazardous_substances,,,,,,,y,blind,claude,not stated in the document
+samsung-inr21700-50e,dismantling_info,,,,,,,y,blind,claude,not stated in the document
+samsung-inr21700-50e,extinguishing_agent,,,,,,,y,blind,claude,not stated in the document
+samsung-inr21700-50e,un38_3_test,,,,,,,y,blind,claude,not stated in the document
+samsung-inr21700-50e,eu_declaration_ref,,,,,,,y,blind,claude,not stated in the document
+akkuman-ebv-bosch-15ah,model_identifier,EBV E-Bike Battery,,EBV E-BIKE BATTERY,,15 Ah / 540 Wh Downtube Battery,,,disagree,claude,p1 L3 product name 'EBV E-BIKE BATTERY'; '15 Ah / 540 Wh Downtube Battery' is the variant line
+akkuman-powerpack-yamaha,model_identifier,PowerPack for Yamaha 36 V,,"E-BIKE VISION POWERPACK, COMPATIBLE TO YAMAHA* PW SERIES WITH 36 V",,PowerPack for Yamaha 36 V,,,disagree,claude,p1 L9 footer 'Specification PowerPack for Yamaha 36 V' (concise product name)
+calb-lc32230,dismantling_info,,,,,Disassembling the product without written consent from ExpertPower is strictly prohibited,,,disagree,claude,"p21 L14 is a prohibition ('Disassembling ... strictly prohibited'), not dismantling info — rule: prohibitions don't count"
+molicel-inr18650-p26a,hazardous_substances,,,,,Comply with EU RoHS,,,disagree,claude,"p8 L21 'Comply with EU RoHS' is bare compliance, no substance content — rule: doesn't count"
+molicel-inr21700-p42a,rated_capacity,4.2,Ah,4.2,Ah,4.0,Ah,,disagree,claude,p3 L7 '4.2 Ah' is the nominal designation; p4 L11 '4.0Ah (Minimum)' is the minimum — guide: not minimum
+panasonic-ncr2070c,manufacturer,Panasonic Corporation,,Panasonic Corporation,,"SANYO Electric Co., Ltd.",,,disagree,claude,"AMBIGUOUS: p1 L2 'Panasonic Corporation', p1 L3 'SANYO Electric Co., Ltd.' (division). Took the first-named company"
+rs-lfp-14500,chemistry,LiFePO4,,LiFePO,,LiFePO4,,,disagree,claude,p1 L1 'Li-Ion (LiFePO )' + subscript '4' on L2
+rs-lfp-14500,min_voltage,2.0,V,2.0,V,2.75,V,,disagree,claude,p1 L18 'discharge end voltage: ≥ 2.0 V (recommended)'; 2.75V on L11 is a test condition
+rs-lfp-14500,operating_temp_min,-20,°C,- 20,°C,-20,°C,,disagree,claude,p1 L41 '- 20...60 °C discharge'
+samsung-inr18650-25r,weight,45.0,g,45.0,g,43.8,g,,disagree,claude,p3 L8 'Weight (g) Max. 45.0 43.8' — Spec column 45.0; 43.8 is the Typical column
+samsung-inr18650-25r,internal_resistance,18,mΩ,18,mΩ,13.20 ± 2,mΩ,,disagree,claude,p3 L9 'Initial IR (mΩ AC 1kHz) ≤ 18 13.20 ± 2' — Spec column ≤18
+samsung-inr18650-29e,internal_resistance,45,mΩ,45,m(cid:735),45,mΩ,,disagree,claude,p4 L34 'Initial internal impedance ≤ 45mΩ' (Ω garbled in PDF text)
+samsung-inr18650-30q,hazardous_substances,"contains no environmentally hazardous component, such as lead or cadmium",,"contains no environmentally hazardous component, such as lead or cadmium",,,,,disagree,claude,"p11 L39-40 — states substance content (none), so it counts"
+samsung-inr18650-30q,dismantling_info,,,,,The cell should not be dismantled from the battery pack.,,,disagree,claude,p11 L19 'should not be dismantled' is a prohibition — rule: doesn't count
+samsung-inr18650-35e,rated_capacity,"3,350",mAh,"3,250",mAh,,,,disagree,claude,"p3 L12/14 Standard discharge capacity Min 3,350mAh (only min values given; took the standard, not the 1C rated 3,250) — new rule"
+samsung-inr18650-35e,dismantling_info,,,,,The cell should not be dismantled from the battery pack.,,,disagree,claude,p12 L35 prohibition — rule: doesn't count
+samsung-inr21700-40t,dismantling_info,,,,,The cell should not be dismantled from the battery pack.,,,disagree,claude,p15 L11 prohibition — rule: doesn't count
+sanyo-ncr20700b,min_voltage,,,,,2.5,V,,disagree,claude,p2 spec table has no cut-off voltage; 2.5V only appears in test conditions (p3 L2)
+sony-us18650vtc6,max_discharge_current,30,A,15,A,30,A,,disagree,claude,"AMBIGUOUS: p4 L37 30A (with 80℃ temperature cut), L41 15A (without). Took the first-listed"
+sony-us21700vtc6a,max_voltage,4.20,V,4.20,V,4.25,V,,disagree,claude,"p5 L28 'Charging Voltage 4.20V'; 4.25V (p4 L21) is the absolute maximum, hint says charge (end) voltage"
+calb-lc32230,max_discharge_current,,,1,C,1,C,,fix,claude,"p12 L10 'Maximum continuous 1 C' — only a C-rate, never stated in A; 'never calculate' → empty"
+molicel-inr21700-m50a,internal_resistance,15,mΩ,15,mW,15,mW,,fix,claude,p1 L23 '15 mW' — PDF font renders Ω as W; value unchanged
+samsung-inr18650-29e,max_discharge_current,"2,750",mA,"2,750",mAh,"2,750",mAh,,fix,claude,"p3 L22 '2,750mAh (continuous discharge)' — datasheet typo for mA"
+a123-anr26650m1a,manufacturer,"A123Systems, Inc.",,"A123Systems, Inc.",,"A123Systems, Inc.",,,audit,claude,confirmed against the PDF
+a123-anr26650m1a,weight,70,g,70,grams,70,grams,,audit,claude,p1 L31 '70 grams' — unit written as g so the eval can convert
+a123-anr26650m1a,dismantling_info,,,,,,,,audit,claude,confirmed against the PDF
+akkuman-ebv-bosch-15ah,internal_resistance,,,,,,,,audit,claude,confirmed against the PDF
+akkuman-ebv-bosch-15ah,un38_3_test,,,,,,,,audit,claude,confirmed against the PDF
+akkuman-powerpack-yamaha,nominal_voltage,36,V,36,V,36,V,,audit,claude,confirmed against the PDF
+akkuman-powerpack-yamaha,extinguishing_agent,,,,,,,,audit,claude,confirmed against the PDF
+akkuman-powerpack-yamaha,eu_declaration_ref,,,,,,,,audit,claude,confirmed against the PDF
+calb-lc32230,manufacturer,ExpertPower,,ExpertPower,,ExpertPower,,,audit,claude,confirmed against the PDF
+calb-lc32230,chemistry,LiFePO4,,LiFePO4,,LiFePO4,,,audit,claude,confirmed against the PDF
+eve-lf314,nominal_voltage,3.2,V,3.2,V,3.2,V,,audit,claude,confirmed against the PDF
+molicel-inr18650-m35a,chemistry,,,,,,,,audit,claude,confirmed against the PDF
+molicel-inr18650-m35a,capacity_threshold_pct,70,%,70,%,70,%,,audit,claude,confirmed against the PDF
+molicel-inr18650-m35a,hazardous_substances,,,,,,,,audit,claude,confirmed against the PDF
+molicel-inr18650-m35a,eu_declaration_ref,,,,,,,,audit,claude,confirmed against the PDF
+molicel-inr18650-p26a,manufacturer,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,E-One Moli Energy Corp.,,,audit,claude,confirmed against the PDF
+molicel-inr18650-p26a,chemistry,,,,,,,,audit,claude,confirmed against the PDF
+molicel-inr18650-p26a,eu_declaration_ref,,,,,,,,audit,claude,confirmed against the PDF
+molicel-inr20700a,rated_capacity,3.0,Ah,3.0,Ah,3.0,Ah,,audit,claude,confirmed against the PDF
+molicel-inr20700a,hazardous_substances,,,,,,,,audit,claude,confirmed against the PDF
+molicel-inr20700a,dismantling_info,,,,,,,,audit,claude,confirmed against the PDF
+molicel-inr20700a,un38_3_test,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,Comply with UN Recommendations on the Transport of Dangerous Goods: Manual of Tests and Criteria,,,audit,claude,confirmed against the PDF
+molicel-inr21700-m50a,battery_category,,,,,,,,audit,claude,confirmed against the PDF
+molicel-inr21700-m50a,min_voltage,2.5,V,2.5,V,2.5,V,,audit,claude,confirmed against the PDF
+molicel-inr21700-m50a,extinguishing_agent,,,,,,,,audit,claude,confirmed against the PDF
+molicel-inr21700-p42a,model_identifier,INR-21700-P42A,,INR-21700-P42A,,INR-21700-P42A,,,audit,claude,confirmed against the PDF
+molicel-inr21700-p42a,internal_resistance,≤ 15,mΩ,≤ 15,mΩ,≤ 15,mΩ,,audit,claude,confirmed against the PDF
+panasonic-ncr18650b,manufacturer,,,,,,,,audit,claude,confirmed against the PDF
+panasonic-ncr18650b,internal_resistance,,,,,,,,audit,claude,confirmed against the PDF
+panasonic-ncr18650bd,max_discharge_current,,,,,,,,audit,claude,confirmed against the PDF
+panasonic-ncr18650bd,extinguishing_agent,,,,,,,,audit,claude,confirmed against the PDF
+panasonic-ncr2070c,operating_temp_min,-20,°C,-20,°C,-20,°C,,audit,claude,confirmed against the PDF
+panasonic-ncr2070c,un38_3_test,,,,,,,,audit,claude,confirmed against the PDF
+panasonic-ncr2070c,eu_declaration_ref,,,,,,,,audit,claude,confirmed against the PDF
+rs-lfp-14500,manufacturer,ANSMANN,,ANSMANN,,ANSMANN,,,audit,claude,confirmed against the PDF
+rs-lfp-14500,model_identifier,1300-0021,,1300-0021,,1300-0021,,,audit,claude,confirmed against the PDF
+samsung-inr18650-25r,max_discharge_current,20,A,20,A,20,A,,audit,claude,confirmed against the PDF
+samsung-inr18650-25r,hazardous_substances,,,,,,,,audit,claude,confirmed against the PDF
+samsung-inr18650-29e,chemistry,,,,,,,,audit,claude,confirmed against the PDF
+samsung-inr18650-29e,rated_capacity,"2,850",mAh,"2,850",mAh,"2,850",mAh,,audit,claude,confirmed against the PDF
+samsung-inr18650-29e,nominal_voltage,3.65,V,3.65,V,3.65,V,,audit,claude,confirmed against the PDF
+samsung-inr18650-29e,expected_lifetime_cycles,500,cycles,500,cycles,500,cycles,,audit,claude,confirmed against the PDF
+samsung-inr18650-29e,un38_3_test,,,,,,,,audit,claude,confirmed against the PDF
+samsung-inr18650-30q,rated_capacity,"3,000",mAh,"3,000",mAh,"3,000",mAh,,audit,claude,confirmed against the PDF
+samsung-inr18650-30q,nominal_voltage,3.6,V,3.6,V,3.6,V,,audit,claude,confirmed against the PDF
+samsung-inr18650-35e,nominal_voltage,3.60,V,3.60,V,3.60,V,,audit,claude,confirmed against the PDF
+samsung-inr21700-40t,eu_declaration_ref,,,,,,,,audit,claude,confirmed against the PDF
+sanyo-ncr20700b,battery_category,,,,,,,,audit,claude,confirmed against the PDF
+sanyo-ncr20700b,rated_capacity,4000,mAh,4000,mAh,4000,mAh,,audit,claude,confirmed against the PDF
+sanyo-ncr20700b,un38_3_test,,,,,,,,audit,claude,confirmed against the PDF
+sony-us18650vtc5a,battery_category,,,,,,,,audit,claude,confirmed against the PDF
+sony-us18650vtc5a,capacity_threshold_pct,,,,,,,,audit,claude,confirmed against the PDF
+sony-us18650vtc6,internal_resistance,8～18,mΩ,8mΩ～18mΩ,mΩ,8～18,mΩ,,audit,claude,confirmed against the PDF
+sony-us18650vtc6,dismantling_info,,,,,,,,audit,claude,confirmed against the PDF
+sony-us21700vtc6a,nominal_voltage,3.6,V,3.6,V,3.6,V,,audit,claude,confirmed against the PDF
+sony-us21700vtc6a,operating_temp_min,-20,deg.C,-20,deg.C,-20,deg.C,,audit,claude,confirmed against the PDF
+sony-us21700vtc6a,hazardous_substances,,,,,,,,audit,claude,confirmed against the PDF
 a123-anr26650m1a,model_identifier,ANR26650M1A,,ANR26650M1A,,ANR26650M1A,,,,auto,
 a123-anr26650m1a,battery_category,,,,,,,,,auto,
 a123-anr26650m1a,chemistry,,,,,,,,,auto,

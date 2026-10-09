@@ -36,3 +36,4 @@ to it and to Richard alike.
 - **`fix`:** a row both models agreed on but that couldn't be scored as written (unit typo, C-rate); Claude corrected it.
 - **`check`:** a sheet the second model couldn't label. Check every row.
 - When a queued row is done, type `y` in `checked`. Rows with `checked=auto` need nothing.
+- `checked=claude` means Claude resolved the row and no human has confirmed it yet (parked Fri 9 Oct 2026). Change it to `y` once you have.
