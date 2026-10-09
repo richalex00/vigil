@@ -14,7 +14,7 @@ export function Pick({ sheets, evalJson, onPick }: { sheets: Sheet[]; evalJson: 
   return (
     <main className="instrument pick">
       <header className="pick-head">
-        <p className="wordmark">vigil</p>
+        <img className="lockup" src={`${import.meta.env.BASE_URL}brand/vigil-lockup.png`} alt="Vigil" width="113" height="48" />
         <h1>Turn a battery datasheet into a passport you can check, line by line.</h1>
         <p className="lede">
           From February 2027, every EV, e-bike and home-storage battery sold in the EU needs a digital passport.

@@ -134,7 +134,7 @@ function FieldRow({ f, schema, res, focused, open, onOpen, onFocus, onResolve }:
 }) {
   const r = res[f.id];
   const ring = ringOf(f);
-  const empty = f.value === null || f.value === "";
+  const empty = (f.value === null || f.value === "") && !f.raw_value;
   const shown = currentValue(f, r);
   const state = !r ? null : r.kind === "fixed" ? "Fixed" : r.kind === "requested" ? "Requested" : "Accepted";
 

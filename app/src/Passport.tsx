@@ -50,7 +50,7 @@ export function Passport({ sheet, schema, res, onBack, onRestart }: {
         <article className="passport">
           <div className="passport-head">
             <div>
-              <p className="wordmark dark">vigil</p>
+              <img className="lockup" src={`${import.meta.env.BASE_URL}brand/vigil-lockup.png`} alt="Vigil" width="94" height="40" />
               <h1>{sheet.title}</h1>
               <p className="sub">
                 {maker ? currentValue(maker, res[maker.id]) : "Manufacturer not stated"}
