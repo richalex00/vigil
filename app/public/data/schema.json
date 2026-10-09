@@ -1,0 +1,389 @@
+{
+  "clusters": [
+    {
+      "id": "general",
+      "label": "General information"
+    },
+    {
+      "id": "performance",
+      "label": "Performance & durability"
+    },
+    {
+      "id": "materials",
+      "label": "Materials & composition"
+    },
+    {
+      "id": "carbon",
+      "label": "Carbon footprint"
+    },
+    {
+      "id": "circularity",
+      "label": "Circularity & safety"
+    },
+    {
+      "id": "compliance",
+      "label": "Compliance"
+    }
+  ],
+  "fields": [
+    {
+      "id": "manufacturer",
+      "label": "Manufacturer",
+      "cluster": "general",
+      "kind": "source",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "",
+      "match": "exact",
+      "allowed_units": []
+    },
+    {
+      "id": "model_identifier",
+      "label": "Model identifier",
+      "cluster": "general",
+      "kind": "source",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "",
+      "match": "exact",
+      "allowed_units": []
+    },
+    {
+      "id": "battery_category",
+      "label": "Battery category",
+      "cluster": "general",
+      "kind": "source",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "portable, LMT, EV, industrial or SLI - only if the document states it",
+      "match": "exact",
+      "allowed_units": []
+    },
+    {
+      "id": "chemistry",
+      "label": "Chemistry",
+      "cluster": "general",
+      "kind": "source",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "cathode chemistry, e.g. NMC, LFP, NCA",
+      "match": "exact",
+      "allowed_units": []
+    },
+    {
+      "id": "weight",
+      "label": "Weight",
+      "cluster": "general",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "g",
+      "min": 1,
+      "max": 1500000,
+      "hint": "",
+      "match": "exact",
+      "allowed_units": [
+        "g",
+        "kg"
+      ]
+    },
+    {
+      "id": "manufacturing_date",
+      "label": "Manufacturing date",
+      "cluster": "general",
+      "kind": "supplier",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "",
+      "match": "exact",
+      "allowed_units": []
+    },
+    {
+      "id": "rated_capacity",
+      "label": "Rated capacity",
+      "cluster": "performance",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "Ah",
+      "min": 0.01,
+      "max": 2000,
+      "hint": "nominal or rated capacity, not minimum capacity",
+      "match": "exact",
+      "allowed_units": [
+        "Ah",
+        "mAh"
+      ]
+    },
+    {
+      "id": "nominal_voltage",
+      "label": "Nominal voltage",
+      "cluster": "performance",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "V",
+      "min": 1,
+      "max": 1000,
+      "hint": "",
+      "match": "exact",
+      "allowed_units": [
+        "V",
+        "mV"
+      ]
+    },
+    {
+      "id": "min_voltage",
+      "label": "Minimum voltage",
+      "cluster": "performance",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "V",
+      "min": 0.5,
+      "max": 1000,
+      "hint": "discharge cut-off voltage",
+      "match": "exact",
+      "allowed_units": [
+        "V",
+        "mV"
+      ]
+    },
+    {
+      "id": "max_voltage",
+      "label": "Maximum voltage",
+      "cluster": "performance",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "V",
+      "min": 1,
+      "max": 1000,
+      "hint": "charge (end) voltage",
+      "match": "exact",
+      "allowed_units": [
+        "V",
+        "mV"
+      ]
+    },
+    {
+      "id": "max_discharge_current",
+      "label": "Max continuous discharge current",
+      "cluster": "performance",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "A",
+      "min": 0.01,
+      "max": 5000,
+      "hint": "",
+      "match": "exact",
+      "allowed_units": [
+        "A",
+        "mA"
+      ]
+    },
+    {
+      "id": "internal_resistance",
+      "label": "Internal resistance",
+      "cluster": "performance",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "mΩ",
+      "min": 0.01,
+      "max": 100000,
+      "hint": "AC or DC impedance; the quote must show which",
+      "match": "exact",
+      "allowed_units": [
+        "mΩ",
+        "Ω"
+      ]
+    },
+    {
+      "id": "expected_lifetime_cycles",
+      "label": "Expected lifetime",
+      "cluster": "performance",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "cycles",
+      "min": 10,
+      "max": 100000,
+      "hint": "",
+      "match": "exact",
+      "allowed_units": [
+        "cycles"
+      ]
+    },
+    {
+      "id": "capacity_threshold_pct",
+      "label": "Capacity threshold for exhaustion",
+      "cluster": "performance",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "%",
+      "min": 50,
+      "max": 100,
+      "hint": "end-of-life capacity percentage the cycle life is rated to",
+      "match": "exact",
+      "allowed_units": [
+        "%"
+      ]
+    },
+    {
+      "id": "operating_temp_min",
+      "label": "Min operating temperature",
+      "cluster": "performance",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "°C",
+      "min": -60,
+      "max": 30,
+      "hint": "lowest discharge temperature",
+      "match": "exact",
+      "allowed_units": [
+        "°C"
+      ]
+    },
+    {
+      "id": "operating_temp_max",
+      "label": "Max operating temperature",
+      "cluster": "performance",
+      "kind": "source",
+      "vtype": "number",
+      "unit": "°C",
+      "min": 20,
+      "max": 120,
+      "hint": "highest discharge temperature",
+      "match": "exact",
+      "allowed_units": [
+        "°C"
+      ]
+    },
+    {
+      "id": "rated_energy",
+      "label": "Rated energy",
+      "cluster": "performance",
+      "kind": "derived",
+      "vtype": "number",
+      "unit": "Wh",
+      "min": 0.01,
+      "max": 2000000,
+      "hint": "",
+      "match": "exact",
+      "allowed_units": [
+        "Wh",
+        "kWh"
+      ]
+    },
+    {
+      "id": "hazardous_substances",
+      "label": "Hazardous substances",
+      "cluster": "materials",
+      "kind": "source",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "",
+      "match": "tokens",
+      "allowed_units": []
+    },
+    {
+      "id": "critical_raw_materials",
+      "label": "Critical raw materials content",
+      "cluster": "materials",
+      "kind": "supplier",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "",
+      "match": "tokens",
+      "allowed_units": []
+    },
+    {
+      "id": "recycled_content_share",
+      "label": "Recycled content share",
+      "cluster": "materials",
+      "kind": "supplier",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "",
+      "match": "tokens",
+      "allowed_units": []
+    },
+    {
+      "id": "carbon_footprint",
+      "label": "Carbon footprint (production estimate)",
+      "cluster": "carbon",
+      "kind": "estimate",
+      "vtype": "number",
+      "unit": "kg CO2e/kWh",
+      "min": 10,
+      "max": 500,
+      "hint": "",
+      "match": "exact",
+      "allowed_units": [
+        "kg CO2e/kWh"
+      ]
+    },
+    {
+      "id": "dismantling_info",
+      "label": "Dismantling & removal information",
+      "cluster": "circularity",
+      "kind": "source",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "",
+      "match": "tokens",
+      "allowed_units": []
+    },
+    {
+      "id": "extinguishing_agent",
+      "label": "Extinguishing agent",
+      "cluster": "circularity",
+      "kind": "source",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "",
+      "match": "tokens",
+      "allowed_units": []
+    },
+    {
+      "id": "un38_3_test",
+      "label": "UN 38.3 transport test",
+      "cluster": "compliance",
+      "kind": "source",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "",
+      "match": "tokens",
+      "allowed_units": []
+    },
+    {
+      "id": "eu_declaration_ref",
+      "label": "EU declaration of conformity",
+      "cluster": "compliance",
+      "kind": "source",
+      "vtype": "text",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "hint": "",
+      "match": "tokens",
+      "allowed_units": []
+    }
+  ]
+}

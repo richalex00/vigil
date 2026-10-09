@@ -1,0 +1,140 @@
+{
+  "split": "test",
+  "datasheets": 21,
+  "fields_scored_per_sheet": 20,
+  "unscored_fields": [
+    "manufacturing_date",
+    "rated_energy",
+    "critical_raw_materials",
+    "recycled_content_share",
+    "carbon_footprint"
+  ],
+  "baseline": {
+    "n": 420,
+    "correct": 399,
+    "wrong_value": 14,
+    "omission": 4,
+    "hallucination": 3,
+    "present": 244,
+    "absent": 176,
+    "accuracy": 0.95,
+    "recall_present": 0.9262,
+    "hallucination_rate_absent": 0.017
+  },
+  "quote_prompt": {
+    "n": 420,
+    "correct": 406,
+    "wrong_value": 4,
+    "omission": 10,
+    "hallucination": 0,
+    "present": 244,
+    "absent": 176,
+    "accuracy": 0.9667,
+    "recall_present": 0.9426,
+    "hallucination_rate_absent": 0.0
+  },
+  "checked": {
+    "accepted": 220,
+    "accepted_precision": 0.9818,
+    "coverage": 0.5238,
+    "review_burden": 0.4762,
+    "produced_wrong": 4,
+    "caught": 0,
+    "caught_rate": 0.0,
+    "false_alarms": 14,
+    "omissions": 10
+  },
+  "ci95": {
+    "baseline_accuracy": [
+      0.9214,
+      0.9738
+    ],
+    "accepted_precision": [
+      0.9596,
+      1.0
+    ],
+    "caught_rate": [
+      0.0,
+      0.0
+    ]
+  },
+  "blind_subset": {
+    "datasheets": 3,
+    "baseline": {
+      "n": 60,
+      "correct": 54,
+      "wrong_value": 5,
+      "omission": 1,
+      "hallucination": 0,
+      "present": 35,
+      "absent": 25,
+      "accuracy": 0.9,
+      "recall_present": 0.8286,
+      "hallucination_rate_absent": 0.0
+    },
+    "checked": {
+      "accepted": 28,
+      "accepted_precision": 1.0,
+      "coverage": 0.4667,
+      "review_burden": 0.5333,
+      "produced_wrong": 0,
+      "caught": 0,
+      "caught_rate": null,
+      "false_alarms": 1,
+      "omissions": 6
+    }
+  },
+  "labels": {
+    "edit_rate_vs_prefill": 0.1212,
+    "blind_sheets": 3,
+    "method": "model-assisted, model-adjudicated",
+    "human_checked": 0,
+    "model_adjudicated": 140,
+    "auto_accepted": 380,
+    "audited": 57,
+    "audit_error_rate": 0.0,
+    "audit_error_ci95": [
+      0.0,
+      0.0
+    ]
+  },
+  "cost": {
+    "baseline_s_per_sheet": 11.2485,
+    "baseline_usd_per_sheet": 0.0651,
+    "checked_s_per_sheet": 14.1573,
+    "checked_usd_per_sheet": 0.0759
+  },
+  "served_models": [
+    "claude-opus-5-5"
+  ],
+  "missed_errors": [
+    {
+      "datasheet": "rs-lfp-14500",
+      "field": "chemistry",
+      "predicted": "LiFePO",
+      "label": "LiFePO4",
+      "quote": "cell chemistry: Li-Ion (LiFePO )"
+    },
+    {
+      "datasheet": "rs-lfp-14500",
+      "field": "operating_temp_min",
+      "predicted": 20.0,
+      "label": -20.0,
+      "quote": "- 20...60 °C discharge"
+    },
+    {
+      "datasheet": "samsung-inr18650-35e",
+      "field": "rated_capacity",
+      "predicted": 3.25,
+      "label": 3.35,
+      "quote": "Rated Discharge Capacity ≥ 3,250mAh"
+    },
+    {
+      "datasheet": "sony-us18650vtc6",
+      "field": "max_discharge_current",
+      "predicted": 15.0,
+      "label": 30.0,
+      "quote": "15A （温度カット80℃なし）"
+    }
+  ]
+}
