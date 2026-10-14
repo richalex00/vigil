@@ -75,3 +75,52 @@ def test_derived_depends_on_unverified():
     }, PAGES)
     energy = next(r for r in results if r.id == "rated_energy")
     assert energy.status == "review" and energy.reason == "depends on unverified field"
+
+
+WRAPPED = [Page(1, ["Initial Internal Resistance AC, 1 kHz, Delivery SOC,", "0.18 mΩ 0.05 mΩ",
+                    "Nominal Voltage 3.2 V typ", "4.0 V max"])]
+
+
+def test_value_on_line_after_wrapped_label_is_verified():
+    r = check_field(FIELD_BY_ID["internal_resistance"],
+                    raw("internal_resistance", "0.18", "mΩ",
+                        "Initial Internal Resistance AC, 1 kHz, Delivery SOC,"), WRAPPED)
+    assert r.status == "verified-source" and r.line == 1
+
+
+def test_only_first_number_on_wrapped_line_counts_not_tolerance():
+    # "0.18 mΩ 0.05 mΩ" is value cell then tolerance cell; both carry mΩ, so only position tells them apart.
+    quote = "Initial Internal Resistance AC, 1 kHz, Delivery SOC,"
+    ok = check_field(FIELD_BY_ID["internal_resistance"],
+                     raw("internal_resistance", "0.18", "mΩ", quote), WRAPPED)
+    tol = check_field(FIELD_BY_ID["internal_resistance"],
+                      raw("internal_resistance", "0.05", "mΩ", quote), WRAPPED)
+    assert ok.status == "verified-source"
+    assert tol.status == "review" and tol.reason == "value not in quote"
+
+
+def test_next_line_not_used_when_quote_stops_mid_line():
+    # The quote ends before the line does, so the next line is not its value cell.
+    r = check_field(FIELD_BY_ID["nominal_voltage"],
+                    raw("nominal_voltage", "4.0", "V", "Nominal Voltage 3.2 V"), WRAPPED)
+    assert r.status == "review" and r.reason == "value not in quote"
+
+
+HEADER = [Page(1, ["USER GUIDE FOR THE ACME CELL PACK, SUITABLE FOR", "MODEL X SERIES WITH 48 V",
+                   "9.2 While the product contains no mercury or other listed substance,",
+                   "such as lead or cadmium, it must be recycled under local rules"])]
+
+
+def test_free_text_value_may_continue_on_next_line():
+    r = check_field(FIELD_BY_ID["hazardous_substances"],
+                    raw("hazardous_substances",
+                        "contains no mercury or other listed substance, such as lead or cadmium", "",
+                        "While the product contains no mercury or other listed substance,"), HEADER)
+    assert r.status == "verified-source"
+
+
+def test_identifier_must_lie_wholly_inside_quote():
+    r = check_field(FIELD_BY_ID["model_identifier"],
+                    raw("model_identifier", "ACME CELL PACK, SUITABLE FOR MODEL X SERIES WITH 48 V",
+                        "", "USER GUIDE FOR THE ACME CELL PACK, SUITABLE FOR"), HEADER)
+    assert r.status == "review" and r.reason == "value not in quote"
