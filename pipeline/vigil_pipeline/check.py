@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from .contract import FieldResult
 from .estimates import CARBON_ESTIMATE
 from .ingest import Page
-from .quotes import find_quote, norm
+from .quotes import MIN_QUOTE_CHARS, find_quote, norm
 from .schema import FIELDS, Field
 from .units import normalise_unit, numbers_in, parse_number
 
@@ -23,6 +23,19 @@ class RawField:
 def _base(field: Field, **kw) -> FieldResult:
     return FieldResult(id=field.id, label=field.label, cluster=field.cluster, kind=field.kind,
                        unit=field.unit, **kw)
+
+
+def _wrapped_cell(quote: str, pages: list[Page], page: int, line_end: int | None) -> str:
+    """Text of the line after the quote, when the quote stops exactly at a line break.
+
+    pdfplumber emits a table row's label cell and value cell as separate lines whenever the label
+    wraps, so a quote of the label alone ends at the break and its value sits on the next line."""
+    pg = next((p for p in pages if p.number == page), None)
+    if pg is None or line_end is None or line_end >= len(pg.lines):
+        return ""
+    if not norm(pg.lines[line_end - 1]).endswith(norm(quote)[-MIN_QUOTE_CHARS:]):
+        return ""
+    return pg.lines[line_end]
 
 
 def check_field(field: Field, raw: RawField | None, pages: list[Page]) -> FieldResult:
@@ -43,7 +56,12 @@ def check_field(field: Field, raw: RawField | None, pages: list[Page]) -> FieldR
     value: float | str | None
     if field.vtype == "text":
         value = raw.value.strip()
-        if loc is not None and norm(value) not in norm(raw.quote):
+        context = norm(raw.quote)
+        if loc is not None and field.match == "tokens":
+            # Free-text statements are prose and wrap across PDF lines; identifiers (exact match)
+            # are single cells or headings, so they must lie wholly inside the quote.
+            context = norm(raw.quote + " " + _wrapped_cell(raw.quote, pages, page, line_end))
+        if loc is not None and norm(value) not in context:
             reasons.append("value not in quote")
     else:
         number = parse_number(raw.value)
@@ -56,7 +74,12 @@ def check_field(field: Field, raw: RawField | None, pages: list[Page]) -> FieldR
             reasons.append(f"unit '{raw.unit}' not convertible to {field.unit}")
         else:
             value = round(number * converted[1], 9)
-            if loc is not None and not any(math.isclose(number, n, rel_tol=1e-6) for n in numbers_in(raw.quote)):
+            candidates = numbers_in(raw.quote)
+            if loc is not None and not any(math.isclose(number, n, rel_tol=1e-6) for n in candidates):
+                # A wrapped row reads left to right: the value cell comes first, later numbers are
+                # further columns (tolerance, conditions) that often share the value's unit.
+                candidates = numbers_in(_wrapped_cell(raw.quote, pages, page, line_end))[:1]
+            if loc is not None and not any(math.isclose(number, n, rel_tol=1e-6) for n in candidates):
                 reasons.append("value not in quote")
             if not (field.min <= value <= field.max):
                 reasons.append("value outside plausible range")
