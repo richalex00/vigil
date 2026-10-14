@@ -1,2 +1,5 @@
 .superpowers/
 .env
+
+# Manufacturer datasheets: fetch with pipeline/fetch_datasheets.py
+pipeline/datasheets/*.pdf
